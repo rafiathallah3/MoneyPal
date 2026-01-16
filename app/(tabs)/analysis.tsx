@@ -91,6 +91,7 @@ export default function AnalysisScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedPieIndex, setSelectedPieIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [transactionType, setTransactionType] = useState<'income' | 'expense'>('expense');
   const { t, i18n } = useTranslation();
   const isFocused = useIsFocused();
 
@@ -108,32 +109,32 @@ export default function AnalysisScreen() {
       prepareLineData(transactions);
       if (loading) setLoading(false);
     }
-  }, [transactions, summaryMode, selectedDate, isFocused]);
+  }, [transactions, summaryMode, selectedDate, transactionType, isFocused]);
 
-  // Pie chart: expense by category (filtered)
+  // Pie chart: expense/income by category (filtered)
   const preparePieData = (all: Transaction[]) => {
-    let expenses = all.filter(t => t.type === 'expense');
+    let filtered = all.filter(t => t.type === transactionType);
     if (summaryMode === 'month') {
       const year = selectedDate.getFullYear();
       const month = selectedDate.getMonth() + 1;
-      expenses = expenses.filter(t => {
+      filtered = filtered.filter(t => {
         const [tYear, tMonth] = t.date.split('-');
         return parseInt(tYear) === year && parseInt(tMonth) === month;
       });
     } else if (summaryMode === 'year') {
       const year = selectedDate.getFullYear();
-      expenses = expenses.filter(t => {
+      filtered = filtered.filter(t => {
         const [tYear] = t.date.split('-');
         return parseInt(tYear) === year;
       });
     }
     const categoryTotals: { [cat: string]: number } = {};
-    expenses.forEach(t => {
+    filtered.forEach(t => {
       if (!t.category) return;
       categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
     });
     const pie = Object.entries(categoryTotals).map(([cat, value], i) => {
-      const catObj = getCategoryById(cat, 'expense', kategori.filter((v) => v.type === 'expense')) ?? getCategoryById("other_expense", "expense");
+      const catObj = getCategoryById(cat, transactionType, kategori.filter((v) => v.type === transactionType)) ?? getCategoryById(transactionType === 'income' ? "other_income" : "other_expense", transactionType);
       return {
         value: value,
         text: catObj ? TranslateKategori[i18n.language][catObj.id] ? TranslateKategori[i18n.language][catObj.id] : catObj.name : cat,
@@ -144,10 +145,10 @@ export default function AnalysisScreen() {
     setPieData(pie.sort((a, b) => b.value - a.value));
   };
 
-  // Line chart: total expenses by month/year/all
+  // Line chart: total expenses/income by month/year/all
   const prepareLineData = (all: Transaction[]) => {
     if (summaryMode === 'month') {
-      // Show daily expenses for the selected month
+      // Show daily expenses/income for the selected month
       const year = selectedDate.getFullYear();
       const month = selectedDate.getMonth();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -181,13 +182,13 @@ export default function AnalysisScreen() {
 
         labels.push(`${d}${suffix} ${bulan}`);
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-        const total = all.filter(t => t.type === 'expense' && t.date === dateStr).reduce((sum, t) => sum + t.amount, 0);
+        const total = all.filter(t => t.type === transactionType && t.date === dateStr).reduce((sum, t) => sum + t.amount, 0);
         data.push(total);
       }
       
       setLineData({ labels, data });
     } else if (summaryMode === 'year') {
-      // Show monthly expenses for the selected year
+      // Show monthly expenses/income for the selected year
       const year = selectedDate.getFullYear();
       const labels: string[] = [];
       const data: number[] = [];
@@ -196,7 +197,7 @@ export default function AnalysisScreen() {
         const label = d.toLocaleDateString(i18n.language, { month: 'short' }) + ' ' + d.getFullYear().toString().slice(-2);
         labels.push(label);
         const monthStr = `${year}-${String(m + 1).padStart(2, '0')}`;
-        const total = all.filter(t => t.type === 'expense' && t.date.startsWith(monthStr)).reduce((sum, t) => sum + t.amount, 0);
+        const total = all.filter(t => t.type === transactionType && t.date.startsWith(monthStr)).reduce((sum, t) => sum + t.amount, 0);
         data.push(total);
       }
       setLineData({ labels, data });
@@ -210,7 +211,7 @@ export default function AnalysisScreen() {
         const label = d.toLocaleDateString(i18n.language, { month: 'short' }) + ' ' + d.getFullYear().toString().slice(-2);
         months.push(label);
         const monthStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-        const total = all.filter(t => t.type === 'expense' && t.date.startsWith(monthStr)).reduce((sum, t) => sum + t.amount, 0);
+        const total = all.filter(t => t.type === transactionType && t.date.startsWith(monthStr)).reduce((sum, t) => sum + t.amount, 0);
         data.push(total);
       }
       setLineData({ labels: months, data });
@@ -229,7 +230,22 @@ export default function AnalysisScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           {/* Fancy Header */}
-          <HeaderAplikasi subtitle={t('expense_analysis')} pageUtama={true} icon='' />
+          <HeaderAplikasi subtitle={transactionType === 'expense' ? t('expense_analysis') : `${t('summary.income')} Analysis`} pageUtama={true} icon='' />
+          {/* Income/Expense Toggle Row */}
+          <View style={styles.fancySummaryModeRow}>
+            <FancySummaryModeButton
+              mode="expense"
+              isActive={transactionType === 'expense'}
+              onPress={() => { if (transactionType !== 'expense') { setLoading(true); setTransactionType('expense'); } }}
+              label={t('add_transaction.expense')}
+            />
+            <FancySummaryModeButton
+              mode="income"
+              isActive={transactionType === 'income'}
+              onPress={() => { if (transactionType !== 'income') { setLoading(true); setTransactionType('income'); } }}
+              label={t('add_transaction.income')}
+            />
+          </View>
           {/* Fancy Summary Mode Row */}
           <View style={styles.fancySummaryModeRow}>
             {SUMMARY_MODES.map(mode => (
@@ -309,7 +325,7 @@ export default function AnalysisScreen() {
                                 {Math.round((pieData[selectedPieIndex].value / totalPie) * 100)}%
                               </Text>
                             </View>
-                          ) : <Text style={{ alignItems: "center", fontWeight: 'bold', textAlign: 'center' }}>{t('expenses')}</Text>
+                          ) : <Text style={{ alignItems: "center", fontWeight: 'bold', textAlign: 'center' }}>{transactionType === 'expense' ? t('expenses') : t('summary.income')}</Text>
                         }
                       />
                     </View>
@@ -335,17 +351,17 @@ export default function AnalysisScreen() {
                     </View>
                   </>
                 ) : (
-                  <Text style={styles.emptyText}>{t('no_expense_data_for_pie_chart')}</Text>
+                  <Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_pie_chart') : `No ${t('summary.income').toLowerCase()} data for pie chart.`}</Text>
                 )}
               </View>
               {/* Line Chart Card */}
               <View style={styles.card}>
                 <Text style={styles.sectionTitle}>
                   {summaryMode === 'month'
-                    ? `${t('spending_over_time')}\n(${t('days_in')}${formatAnalysisDate(selectedDate, 'month', i18n.language)})`
+                    ? `${transactionType === 'expense' ? t('spending_over_time') : `${t('summary.income')} Over Time`}\n(${t('days_in')}${formatAnalysisDate(selectedDate, 'month', i18n.language)})`
                     : summaryMode === 'year'
-                    ? `${t('spending_over_time')}\n(${t('months_in')}${formatAnalysisDate(selectedDate, 'year', i18n.language)})`
-                    : `${t('spending_over_time')}\n(${t('last_12_months')})`}
+                    ? `${transactionType === 'expense' ? t('spending_over_time') : `${t('summary.income')} Over Time`}\n(${t('months_in')}${formatAnalysisDate(selectedDate, 'year', i18n.language)})`
+                    : `${transactionType === 'expense' ? t('spending_over_time') : `${t('summary.income')} Over Time`}\n(${t('last_12_months')})`}
                 </Text>
                 {lineData.data.length > 0 ? (
                   <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
@@ -441,7 +457,7 @@ export default function AnalysisScreen() {
                     </View>
                   </View>
                 ) : (
-                  <Text style={styles.emptyText}>{t('no_expense_data_for_line_chart')}</Text>
+                  <Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_line_chart') : `No ${t('summary.income').toLowerCase()} data for line chart.`}</Text>
                 )}
               </View>
               
