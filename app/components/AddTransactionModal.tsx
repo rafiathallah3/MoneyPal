@@ -224,18 +224,16 @@ export default function AddTransactionModal({
             budgetLimit = budgetData.default["all"]
         }
 
-        if(budgetLimit <= 0) {
-            return;
-        }
-
-        spentThisMonth = transactions
-            .filter(t => t.type === 'expense' && t.date.startsWith(monthStr))
-            .reduce((sum, t) => sum + t.amount, 0);
-        const inputAmount = parseFloat(formData.amount);
-        if (!isNaN(inputAmount) && inputAmount > 0) {
-            remainingBudget = budgetLimit - spentThisMonth - inputAmount;
-            if(isEditMode && uneditedAmount > 0) {
-                remainingBudget += uneditedAmount;
+        if(budgetLimit > 0) {
+            spentThisMonth = transactions
+                .filter(t => t.type === 'expense' && t.date.startsWith(monthStr))
+                .reduce((sum, t) => sum + t.amount, 0);
+            const inputAmount = parseFloat(formData.amount);
+            if (!isNaN(inputAmount) && inputAmount > 0) {
+                remainingBudget = budgetLimit - spentThisMonth - inputAmount;
+                if(isEditMode && uneditedAmount > 0) {
+                    remainingBudget += uneditedAmount;
+                }
             }
         }
     }

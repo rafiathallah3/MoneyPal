@@ -2,7 +2,6 @@ package com.anonymous.MoneyPal
 
 import android.app.Application
 import android.content.res.Configuration
-import android.content.res.Resources
 
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
@@ -49,22 +48,10 @@ class MainApplication : Application(), ReactApplication {
       load()
     }
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
-    
-    // Disable font scaling globally
-    val configuration = resources.configuration
-    configuration.fontScale = 1.0f
-    val metrics = resources.displayMetrics
-    resources.updateConfiguration(configuration, metrics)
   }
 
   override fun onConfigurationChanged(newConfig: Configuration) {
     super.onConfigurationChanged(newConfig)
     ApplicationLifecycleDispatcher.onConfigurationChanged(this, newConfig)
-    
-    // Re-apply font scaling prevention when configuration changes
-    val configuration = resources.configuration
-    configuration.fontScale = 1.0f
-    val metrics = resources.displayMetrics
-    resources.updateConfiguration(configuration, metrics)
   }
 }

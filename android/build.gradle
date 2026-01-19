@@ -25,6 +25,7 @@ allprojects {
     maven {
       // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
       url(reactNativeAndroidDir)
+      url "$rootDir/../node_modules/@notifee/react-native/android/libs"
     }
 
     google()
@@ -35,12 +36,3 @@ allprojects {
 
 apply plugin: "expo-root-project"
 apply plugin: "com.facebook.react.rootproject"
-rootProject.allprojects {
-  repositories {
-    maven {
-      url "$rootDir/../node_modules/@notifee/react-native/android/libs"
-    }
-  }
-}
-
-def enableProguardInReleaseBuilds = true

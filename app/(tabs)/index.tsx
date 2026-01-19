@@ -463,6 +463,7 @@ export default function MoneyPal() {
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
                 {/* Add/Edit Transaction Modal */}
+                { modalVisible &&
                 <AddTransactionModal
                     visible={modalVisible}
                     onClose={() => {
@@ -477,6 +478,8 @@ export default function MoneyPal() {
                     kategori={kategori}
                     budgetData={budgetData}
                 />
+                
+                }
             </SafeAreaView>
         </LinearGradient>
     );

@@ -7,6 +7,7 @@ import { useKategori } from '@/hooks/useCategory';
 import { useMataUang, useNotifikasi } from '@/hooks/usePreference';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Category, MataUang, TipeBudget, Transaction } from '@/types/types';
+import { storageUtils } from '@/utils/storage';
 import { Ionicons } from '@expo/vector-icons';
 import { types as DocumentPickerTypes, pick } from '@react-native-documents/picker';
 import { useTranslation } from 'react-i18next';
@@ -17,10 +18,11 @@ export default function Restore() {
   const { mataUang, ganti: gantiMataUang } = useMataUang();
   const { opsi: opsiNotifikasi, waktu: waktuNotifikasi, ganti: gantiNotifikasi } = useNotifikasi();
   const { simpan: simpanBudget, hapusSemuaBudget } = useBudget();
-  const { tambah: tambahTransaction, hapusSemua: hapusSemuaTransaction } = useTransactions();
+  const { hapusSemua: hapusSemuaTransaction, dapat: dapatTransaksi } = useTransactions();
   const { simpan: simpanKategori, hapusSemua: hapusSemuaKategori } = useKategori();
   const [isRestoring, setIsRestoring] = useState(false);
   const [parsedData, setParsedData] = useState<{ transactions: Transaction[], categories: Category[], images: Record<string, string>, budget: TipeBudget, preference: { mataUang: MataUang, notifikasi: { opsi: boolean, waktu: { hour: number, minute: number } } }, backupCreatedAt: string, version: number} | null>(null);
+  const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
   const { t } = useTranslation();
 
   const handlePickFile = async () => {
@@ -74,19 +76,32 @@ export default function Restore() {
         await simpanKategori(cat);
       }
       await hapusSemuaTransaction();
-      for (const t of parsedData.transactions) {
-        const newT = { ...t };
+      const totalTransactions = parsedData.transactions.length;
+      const newTransactions: Transaction[] = [];
+      setProgress({ current: 0, total: totalTransactions });
+
+      for (let i = 0; i < totalTransactions; i++) {
+        const t = parsedData.transactions[i];
+        const newT: Transaction = { ...t };
         if (newT.imageUri && imageUriMap[newT.imageUri]) {
           newT.imageUri = imageUriMap[newT.imageUri];
         }
-        await tambahTransaction(newT);
+        newTransactions.push(newT);
+        setProgress({ current: i + 1, total: totalTransactions });
       }
+
+      // Bulk save all restored transactions at once for better performance
+      await storageUtils.saveTransactions(newTransactions);
+      // Refresh in-memory store so other screens see the restored data
+      await dapatTransaksi();
+
       Alert.alert(t('restore.restore_successful_title'), t('restore.restore_successful_desc'));
       setParsedData(null);
     } catch (e: any) {
       Alert.alert(t('restore.restore_failed_title'), `${t('restore.restore_failed_desc')} ${e}`);
     } finally {
       setIsRestoring(false);
+      setProgress(null);
     }
   };
 
@@ -129,6 +144,11 @@ export default function Restore() {
                   <Ionicons name={isRestoring ? 'hourglass-outline' : 'cloud-download-outline'} size={22} color="#fff" />
                   <Text style={styles.buttonText}>{isRestoring ? t('restore.restoring') : t('restore.restore_now')}</Text>
                 </TouchableOpacity>
+                {progress && (
+                  <Text style={[styles.summaryText, { marginTop: 8 }]}>
+                    {`Adding transaction: ${progress.current}/${progress.total}`}
+                  </Text>
+                )}
               </View>
             )}
           </View>

@@ -63,10 +63,6 @@ react {
     autolinkLibrariesWithApp()
 }
 
-// project.ext.react = [
-//   enableHermes: true,
-// ]
-
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
@@ -96,8 +92,8 @@ android {
         applicationId 'com.anonymous.MoneyPal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "1.0.6"
+        versionCode 1
+        versionName "1.0.1"
     }
     signingConfigs {
         debug {
@@ -105,14 +101,6 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-        }
-        release {
-            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-                storeFile file(MYAPP_UPLOAD_STORE_FILE)
-                storePassword MYAPP_UPLOAD_STORE_PASSWORD
-                keyAlias MYAPP_UPLOAD_KEY_ALIAS
-                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-            }
         }
     }
     buildTypes {
@@ -123,7 +111,6 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
-            signingConfig signingConfigs.release
             shrinkResources (findProperty('android.enableShrinkResourcesInReleaseBuilds')?.toBoolean() ?: false)
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"

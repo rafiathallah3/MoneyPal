@@ -55,7 +55,7 @@ function CategoryCard({ item, isSelected, i18n, onPress }: { item: Category, isS
                 activeOpacity={0.85}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
-                style={{ flex: 1 }}
+                // style={{ flex: 1 }}
                 onPress={onPress}
             >
                 <LinearGradient
@@ -263,7 +263,8 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     icon: {
-        fontSize: 28,
+        fontSize: 30,
+        zIndex: 99
     },
     checkmarkCircle: {
         position: 'absolute',
