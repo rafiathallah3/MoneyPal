@@ -21,13 +21,13 @@ export default function Restore() {
   const { hapusSemua: hapusSemuaTransaction, dapat: dapatTransaksi } = useTransactions();
   const { simpan: simpanKategori, hapusSemua: hapusSemuaKategori } = useKategori();
   const [isRestoring, setIsRestoring] = useState(false);
-  const [parsedData, setParsedData] = useState<{ transactions: Transaction[], categories: Category[], images: Record<string, string>, budget: TipeBudget, preference: { mataUang: MataUang, notifikasi: { opsi: boolean, waktu: { hour: number, minute: number } } }, backupCreatedAt: string, version: number} | null>(null);
+  const [parsedData, setParsedData] = useState<{ transactions: Transaction[], categories: Category[], images: Record<string, string>, budget: TipeBudget, preference: { mataUang: MataUang, notifikasi: { opsi: boolean, waktu: { hour: number, minute: number } } }, backupCreatedAt: string, version: number } | null>(null);
   const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
   const { t } = useTranslation();
 
   const handlePickFile = async () => {
     try {
-      const [ res ] = await pick({ type: [DocumentPickerTypes.allFiles] });
+      const [res] = await pick({ type: [DocumentPickerTypes.allFiles] });
       if (!res || !res.uri) return;
 
       const fileContent = await RNFS.readFile(res.uri.replace('file://', ''), 'utf8');
@@ -47,8 +47,8 @@ export default function Restore() {
       setParsedData(data);
       Alert.alert(t('restore.loaded_title'), t('restore.loaded_desc'));
     } catch (e: any) {
-        console.log(e, "ERROR SAAT PICKING FILE");
-        Alert.alert(t('restore.error_title'), t('restore.error_desc'));
+      console.log(e, "ERROR SAAT PICKING FILE");
+      Alert.alert(t('restore.error_title'), t('restore.error_desc'));
     }
   };
 
@@ -60,7 +60,7 @@ export default function Restore() {
       const imageUriMap: Record<string, string> = {}; // oldUri -> newUri
       for (const [oldUri, base64] of Object.entries(parsedData.images || {})) {
         const ext = oldUri.split('.').pop() || 'jpg';
-        const newUri = `${RNFS.DocumentDirectoryPath}/restored_${Date.now()}_${Math.floor(Math.random()*10000)}.${ext}`;
+        const newUri = `${RNFS.DocumentDirectoryPath}/restored_${Date.now()}_${Math.floor(Math.random() * 10000)}.${ext}`;
         await RNFS.writeFile(newUri, base64 as string, 'base64');
         imageUriMap[oldUri] = 'file://' + newUri;
       }

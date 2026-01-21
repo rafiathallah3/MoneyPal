@@ -46,7 +46,7 @@ export default function RootLayout() {
     const { hapusSemua } = useTransactions();
     const router = useRouter();
     const { t } = useTranslation();
-    
+
     const [pinAsli, setPin] = React.useState("");
     const [isUnlocked, setIsUnlocked] = React.useState(true);
 
@@ -62,9 +62,11 @@ export default function RootLayout() {
     const handleResetExpenses = () => {
         Alert.alert(t('reset_expenses.title'), t('reset_expenses.message'), [
             { text: t('reset_expenses.cancel'), style: 'cancel' },
-            { text: t('reset_expenses.reset'), style: 'destructive', onPress: () => {
-                hapusSemua();
-            } },
+            {
+                text: t('reset_expenses.reset'), style: 'destructive', onPress: () => {
+                    hapusSemua();
+                }
+            },
         ]);
     };
 

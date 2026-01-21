@@ -57,7 +57,7 @@ export default function Preferences() {
 
       const [opsi, waktu] = await storageUtils.dapatinNotifikasi();
       setSettingNotifikasi({ opsi, waktu });
-      
+
       const pinnya = await storageUtils.dapatinPin();
       setPinAsli(pinnya);
       setLockScreenEnabled(pinnya !== "");
@@ -67,7 +67,7 @@ export default function Preferences() {
   const toggleReminder = async (value: boolean) => {
     setSettingNotifikasi({ ...settingNotifikasi, opsi: value });
     await storageUtils.simpanOpsiNotifikasi(value);
-    
+
     const hasPermission = await requestNotificationPermission();
     if (!hasPermission) return;
 
@@ -80,7 +80,7 @@ export default function Preferences() {
 
   const handleTimeChange = async (_: any, date?: Date) => {
     setShowTimePicker(false);
-    
+
     if (date) {
       const hour = date.getHours();
       const minute = date.getMinutes();
@@ -129,10 +129,10 @@ export default function Preferences() {
             </TouchableOpacity>
           </View> */}
           {/* Currency Card */}
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}>
             <TouchableOpacity style={styles.cardContent} onPress={() => setCurrencyModalVisible(true)}>
               <View style={styles.cardLeft}>
-                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
                   <Ionicons name="cash-outline" size={24} color={theme.primary} />
                 </View>
                 <View style={styles.cardText}>
@@ -148,10 +148,10 @@ export default function Preferences() {
           </View>
 
           {/* Translation Card */}
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}>
             <TouchableOpacity style={styles.cardContent} onPress={() => setLanguageModalVisible(true)}>
               <View style={styles.cardLeft}>
-                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
                   <Ionicons name="language-outline" size={24} color={theme.primary} />
                 </View>
                 <View style={styles.cardText}>
@@ -167,10 +167,10 @@ export default function Preferences() {
           </View>
 
           {/* Notification Card */}
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}>
             <View style={styles.cardContent}>
               <View style={styles.cardLeft}>
-                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
                   <Ionicons name="notifications-outline" size={24} color={theme.primary} />
                 </View>
                 <View style={styles.cardText}>
@@ -188,7 +188,7 @@ export default function Preferences() {
             </View>
             {settingNotifikasi.opsi && (
               <TouchableOpacity style={[styles.timePickerButton, { backgroundColor: theme.bar }]} onPress={() => setShowTimePicker(true)}>
-                <Text style={[styles.timePickerText, { color: theme.primary }]}> 
+                <Text style={[styles.timePickerText, { color: theme.primary }]}>
                   Notification Time: {settingNotifikasi.waktu.hour.toString().padStart(2, '0')}:{settingNotifikasi.waktu.minute.toString().padStart(2, '0')}
                 </Text>
               </TouchableOpacity>
@@ -205,10 +205,10 @@ export default function Preferences() {
           </View>
 
           {/* Lock Screen Card */}
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}>
             <View style={styles.cardContent}>
               <View style={styles.cardLeft}>
-                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
                   <Ionicons name="lock-closed-outline" size={24} color={theme.primary} />
                 </View>
                 <View style={styles.cardText}>
@@ -245,10 +245,10 @@ export default function Preferences() {
           </View>
 
           {/* Privacy Card */}
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}>
             <TouchableOpacity style={styles.cardContent} onPress={() => setPrivacyModalVisible(true)}>
               <View style={styles.cardLeft}>
-                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+                <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
                   <Ionicons name="document-text-outline" size={24} color={theme.primary} />
                 </View>
                 <View style={styles.cardText}>
@@ -269,8 +269,8 @@ export default function Preferences() {
           onRequestClose={() => setCurrencyModalVisible(false)}
         >
           <Pressable style={styles.modalOverlay} onPress={() => setCurrencyModalVisible(false)}>
-            <View style={[styles.modalContent, { backgroundColor: theme.card }]}> 
-              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}> 
+            <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
+              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}>
                 <Text style={[styles.modalTitle, { color: theme.primary }]}>{t('preferences.select_currency')}</Text>
                 <TouchableOpacity onPress={() => setCurrencyModalVisible(false)}>
                   <Ionicons name="close" size={24} color={theme.textSecondary} />
@@ -318,8 +318,8 @@ export default function Preferences() {
             setLockScreenEnabled(pin !== "");
           }}
         >
-          <Pressable 
-            style={styles.modalOverlay} 
+          <Pressable
+            style={styles.modalOverlay}
             onPress={() => {
               setPinModalVisible(false);
               setLockScreenEnabled(pin !== "");
@@ -337,27 +337,27 @@ export default function Preferences() {
                   <Ionicons name="close" size={24} color={theme.textSecondary} />
                 </TouchableOpacity>
               </View>
-              
+
               <View style={styles.pinSetupContainer}>
                 <Text style={[styles.pinSetupText, { color: theme.text }]}>
-                  {pinModalMode === 'setup' 
-                    ? 'Enter a 4-digit PIN to lock your app' 
+                  {pinModalMode === 'setup'
+                    ? 'Enter a 4-digit PIN to lock your app'
                     : 'Enter your current PIN to disable lock screen'}
                 </Text>
-                
+
                 <View style={styles.pinDotsContainer}>
                   {[...Array(4)].map((_, index) => {
                     const isFilled = currentPin.length > index;
                     const hasError = pinError !== '';
                     return (
-                      <View 
-                        key={index} 
+                      <View
+                        key={index}
                         style={[
                           styles.pinDot,
-                          { 
+                          {
                             borderColor: hasError ? '#E74C3C' : theme.divider,
-                            backgroundColor: isFilled 
-                              ? (hasError ? '#E74C3C' : theme.primary) 
+                            backgroundColor: isFilled
+                              ? (hasError ? '#E74C3C' : theme.primary)
                               : theme.bar
                           }
                         ]}
@@ -371,17 +371,17 @@ export default function Preferences() {
                     );
                   })}
                 </View>
-                
+
                 {pinError !== '' && (
                   <Text style={styles.pinErrorText}>{pinError}</Text>
                 )}
-                
+
                 <View style={styles.pinKeypad}>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'clear', 0, 'delete'].map((key, index) => (
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       key={index}
                       style={[
-                        styles.pinKey, 
+                        styles.pinKey,
                         { backgroundColor: theme.bar },
                         typeof key === 'number' && styles.pinKeyNumber
                       ]}
@@ -397,7 +397,7 @@ export default function Preferences() {
                             const updatedPin = currentPin + key.toString();
                             setCurrentPin(updatedPin);
                             setPinError('');
-                            
+
                             // If PIN is complete
                             if (updatedPin.length === 4) {
                               setTimeout(async () => {
@@ -439,7 +439,7 @@ export default function Preferences() {
             </View>
           </Pressable>
         </Modal>
-        
+
         {/* Privacy Policy Modal */}
         <Modal
           visible={privacyModalVisible}
@@ -448,14 +448,14 @@ export default function Preferences() {
           onRequestClose={() => setPrivacyModalVisible(false)}
         >
           <Pressable style={styles.modalOverlay} onPress={() => setPrivacyModalVisible(false)}>
-            <View style={[styles.modalContent, { backgroundColor: theme.card }]}> 
-              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}> 
+            <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
+              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}>
                 <Text style={[styles.modalTitle, { color: theme.primary }]}>{t('preferences.privacy')}</Text>
                 <TouchableOpacity onPress={() => setPrivacyModalVisible(false)}>
                   <Ionicons name="close" size={24} color={theme.textSecondary} />
                 </TouchableOpacity>
               </View>
-              <Text style={[styles.privacyText, { color: theme.text }]}> 
+              <Text style={[styles.privacyText, { color: theme.text }]}>
                 We respect your privacy. Your data is stored only on your device and is never shared with third parties.
               </Text>
               <TouchableOpacity style={[styles.closeButton, { backgroundColor: theme.primary }]} onPress={() => setPrivacyModalVisible(false)}>
@@ -473,8 +473,8 @@ export default function Preferences() {
           onRequestClose={() => setLanguageModalVisible(false)}
         >
           <Pressable style={styles.modalOverlay} onPress={() => setLanguageModalVisible(false)}>
-            <View style={[styles.modalContent, { backgroundColor: theme.card }]}> 
-              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}> 
+            <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
+              <View style={[styles.modalHeader, { borderBottomColor: theme.divider }]}>
                 <Text style={[styles.modalTitle, { color: theme.primary }]}>{t('preferences.select_language')}</Text>
                 <TouchableOpacity onPress={() => setLanguageModalVisible(false)}>
                   <Ionicons name="close" size={24} color={theme.textSecondary} />

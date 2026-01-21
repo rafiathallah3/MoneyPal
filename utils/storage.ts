@@ -98,12 +98,12 @@ export const storageUtils = {
   async dapatinWarnaTema(): Promise<Tipe_WarnaTema> {
     try {
       const data = await AsyncStorage.getItem(WARNATEMA_KEY);
-      if(data) {
+      if (data) {
         return data as "sistem";
       }
 
       return "sistem";
-    } catch(e) {
+    } catch (e) {
       console.error("Error saat mendapatkan warna tema", e);
       return "sistem";
     }
@@ -112,7 +112,7 @@ export const storageUtils = {
   async simpanWarnaTema(warna: Tipe_WarnaTema): Promise<void> {
     try {
       await AsyncStorage.setItem(WARNATEMA_KEY, warna);
-    } catch(e) {
+    } catch (e) {
       console.error("Error saat menyimpan warna tema", e);
     }
   },
@@ -128,8 +128,8 @@ export const storageUtils = {
   async dapatinMataUang(): Promise<Tipe_MataUang> {
     try {
       const data = await AsyncStorage.getItem(MATAUANG_KEY);
-      
-      if(CURRENCIES.find((v) => v.symbol === data) === undefined) {
+
+      if (CURRENCIES.find((v) => v.symbol === data) === undefined) {
         return "$";
       }
 
@@ -144,7 +144,7 @@ export const storageUtils = {
     try {
       const kategori = await AsyncStorage.getItem(CUSTOM_CATEGORIES_KEY);
       return kategori ? JSON.parse(kategori) : [];
-    } catch(error) {
+    } catch (error) {
       console.error("Error dapatin custom kategori", error);
       return [];
     }
@@ -156,7 +156,7 @@ export const storageUtils = {
       const updateKategori = [...semuaKategori, kategori];
       await AsyncStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(updateKategori));
       return updateKategori;
-    } catch(error) {
+    } catch (error) {
       console.error("ERror simpan custom kategori", error);
       return [];
     }
@@ -170,7 +170,7 @@ export const storageUtils = {
       );
       await AsyncStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(updateKategori));
       return updateKategori;
-    } catch(error) {
+    } catch (error) {
       console.error("Error update custom kategori", error);
       return [];
     }
@@ -180,7 +180,7 @@ export const storageUtils = {
     try {
       const existingTransactions = await this.loadTransactions();
       existingTransactions.map((v) => {
-        if(v.id === id) {
+        if (v.id === id) {
           v.category = v.type === "expense" ? "other_expense" : "other_income";
         }
 
@@ -192,7 +192,7 @@ export const storageUtils = {
       const updateKategori = semuaKategori.filter((val) => val.id !== id);
       await AsyncStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(updateKategori));
       return updateKategori;
-    } catch(error) {
+    } catch (error) {
       console.error("Error hapus custom kategori", error);
       return [];
     }
@@ -210,16 +210,16 @@ export const storageUtils = {
     try {
       const value = await AsyncStorage.getItem(NOTIFIKASI_KEY);
       const waktuRaw = await AsyncStorage.getItem(WAKTU_NOTIFIKASI_KEY);
-      
+
       const waktu = { hour: 20, minute: 0 };
-      if(waktuRaw !== null) {
-        const {hour, minute} = JSON.parse(waktuRaw);
+      if (waktuRaw !== null) {
+        const { hour, minute } = JSON.parse(waktuRaw);
         waktu.hour = hour;
         waktu.minute = minute;
       }
 
       return [value === 'true', waktu];
-    } catch(e: any) {
+    } catch (e: any) {
       console.log("Error saat ingin load notifikasi", e);
       return [false, { hour: 20, minute: 0 }]
     }
@@ -270,10 +270,10 @@ export const storageUtils = {
   async loadBudgetData(): Promise<TipeBudget> {
     try {
       const data = await AsyncStorage.getItem(BUDGET_KEY);
-      return data ? JSON.parse(data) : {budget: {}, default: {}};
+      return data ? JSON.parse(data) : { budget: {}, default: {} };
     } catch (error) {
       console.error('Error loading budget data:', error);
-      return {budget: {}, default: {}};
+      return { budget: {}, default: {} };
     }
   },
 

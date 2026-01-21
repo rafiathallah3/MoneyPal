@@ -1,4 +1,5 @@
 import { MataUang, Tipe_MataUang, Tipe_WarnaTema } from "@/types/types";
+import { cancelDailyReminder, scheduleDailyReminder } from "@/utils/notifikasi";
 import { CURRENCIES } from "@/utils/preferences";
 import { storageUtils } from "@/utils/storage";
 import { darkTheme, lightTheme, WarnaTema } from "@/utils/themes";
@@ -20,7 +21,7 @@ export const useTheme = create<ThemeState>((set, get) => ({
         set({ tema: data, theme: data === "dark" ? darkTheme : warna_sistem === "dark" ? darkTheme : lightTheme });
     },
     ganti: async (tema) => {
-        if(tema !== "dark" && tema !== "light" && tema !== "sistem") {
+        if (tema !== "dark" && tema !== "light" && tema !== "sistem") {
             return;
         }
 
@@ -43,7 +44,7 @@ export const useMataUang = create<MataUangState>((set, get) => ({
     },
     ganti: async (pilihan: Tipe_MataUang) => {
         const hasil = CURRENCIES.find((v) => v.symbol === pilihan);
-        if(hasil === undefined) {
+        if (hasil === undefined) {
             return;
         }
 
@@ -71,5 +72,10 @@ export const useNotifikasi = create<NotifikasiState>((set, get) => ({
         await storageUtils.simpanWaktuNotifikasi(waktu_notifikasi);
         set({ opsi: opsi_notfikasi, waktu: waktu_notifikasi });
 
+        if (opsi_notfikasi) {
+            await scheduleDailyReminder(waktu_notifikasi.hour, waktu_notifikasi.minute);
+        } else {
+            await cancelDailyReminder();
+        }
     }
 }))
