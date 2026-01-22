@@ -13,22 +13,22 @@ interface DrawerContentProps {
 
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.anonymous.MoneyPal'; // Replace with your app's Play Store URL
 
-const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpenses }) => { 
+const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpenses }) => {
   const KePage = (arah: string) => {
     navigation.closeDrawer();
     InteractionManager.runAfterInteractions(() => {
       navigation.navigate('TabsStack', { screen: arah });
     })
   }
-  
+
   const { t } = useTranslation();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.card }]}> 
+    <View style={[styles.container, { backgroundColor: theme.card }]}>
       {/* Header Section */}
-      <View style={[styles.header, { backgroundColor: theme.primary }]}> 
+      <View style={[styles.header, { backgroundColor: theme.primary }]}>
         <View style={styles.appIconContainer}>
-          <View style={[styles.appIcon ]}> 
+          <View style={[styles.appIcon]}>
             <Image
               source={require('../../assets/images/revert-icon.png')}
               style={{ width: 40, height: 40, resizeMode: 'contain' }}
@@ -45,9 +45,9 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
       {/* Menu Items */}
       <View style={styles.menuSection}>
         <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>{t('drawer.main_menu')}</Text>
-        
+
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={() => KePage('preferences')}>
-          <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: theme.bar }]}>
             <Ionicons name="settings-outline" size={20} color={theme.primary} />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.preference')}</Text>
@@ -55,7 +55,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={onResetExpenses}>
-          <View style={[styles.iconContainer, { backgroundColor: '#ffebee' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#ffebee' }]}>
             <Ionicons name="trash-outline" size={20} color="#dc3545" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.reset_records')}</Text>
@@ -63,7 +63,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
         </TouchableOpacity>
 
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={() => KePage('exportRecord')}>
-          <View style={[styles.iconContainer, { backgroundColor: '#e8f5e8' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#e8f5e8' }]}>
             <Ionicons name="download-outline" size={20} color="#28a745" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.export_records')}</Text>
@@ -72,7 +72,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
 
         {/* Backup Button */}
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={() => { KePage('backup') }}>
-          <View style={[styles.iconContainer, { backgroundColor: '#e3fcec' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#e3fcec' }]}>
             <Ionicons name="cloud-upload-outline" size={20} color="#00b894" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.backup')}</Text>
@@ -81,7 +81,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
 
         {/* Restore Button */}
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={() => { KePage('restore') }}>
-          <View style={[styles.iconContainer, { backgroundColor: '#e3f0fc' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#e3f0fc' }]}>
             <Ionicons name="cloud-download-outline" size={20} color="#0984e3" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.restore')}</Text>
@@ -95,9 +95,9 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
       {/* Support Section */}
       <View style={styles.menuSection}>
         <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>{t('drawer.support')}</Text>
-        
+
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={() => Linking.openURL(PLAY_STORE_URL)}>
-          <View style={[styles.iconContainer, { backgroundColor: '#fce4ec' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#fce4ec' }]}>
             <Ionicons name="heart-outline" size={20} color="#ff4081" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.rate_app')}</Text>
@@ -106,7 +106,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
 
         {/* Support Button */}
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]}>
-          <View style={[styles.iconContainer, { backgroundColor: '#e0f7fa' }]}> 
+          <View style={[styles.iconContainer, { backgroundColor: '#e0f7fa' }]}>
             <Ionicons name="star-outline" size={20} color="#00bcd4" />
           </View>
           <Text style={[styles.menuItemText, { color: theme.text }]}>{t('drawer.support')}</Text>

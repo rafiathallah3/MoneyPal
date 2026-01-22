@@ -1,5 +1,5 @@
 import { MataUang, Tipe_MataUang, Tipe_WarnaTema } from "@/types/types";
-import { cancelDailyReminder, scheduleDailyReminder } from "@/utils/notifikasi";
+import { cancelDailyReminder, requestNotificationPermission, scheduleDailyReminder } from "@/utils/notifikasi";
 import { CURRENCIES } from "@/utils/preferences";
 import { storageUtils } from "@/utils/storage";
 import { darkTheme, lightTheme, WarnaTema } from "@/utils/themes";
@@ -73,6 +73,8 @@ export const useNotifikasi = create<NotifikasiState>((set, get) => ({
         set({ opsi: opsi_notfikasi, waktu: waktu_notifikasi });
 
         if (opsi_notfikasi) {
+            const hasPermission = await requestNotificationPermission();
+            if (!hasPermission) return;
             await scheduleDailyReminder(waktu_notifikasi.hour, waktu_notifikasi.minute);
         } else {
             await cancelDailyReminder();

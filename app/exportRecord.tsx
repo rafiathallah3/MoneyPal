@@ -41,7 +41,28 @@ const generateCSV = (transactions: Transaction[], customKategori: Category[] = [
     transaction.createdAt
   ]);
 
-  return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+  const totalTransactions = transactions.length;
+  const totalIncome = transactions
+    .filter(t => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+  const totalExpenses = transactions
+    .filter(t => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+  const netBalance = totalIncome - totalExpenses;
+
+  const summaryRows = [
+    [],
+    ['Summary'],
+    ['Total Transactions', totalTransactions.toString()],
+    ['Total Income', totalIncome.toString()],
+    ['Total Expenses', totalExpenses.toString()],
+    ['Net Balance', netBalance.toString()]
+  ];
+
+  const mainContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+  const summaryContent = summaryRows.map(row => row.join(',')).join('\n');
+
+  return `${mainContent}\n${summaryContent}`;
 };
 
 export default function ExportRecord() {
@@ -74,7 +95,7 @@ export default function ExportRecord() {
   const getFilteredTransactions = () => {
     const startDateStr = dateUtils.formatDate(dateRange.startDate);
     const endDateStr = dateUtils.formatDate(dateRange.endDate);
-    
+
     return transactions.filter(transaction => {
       const transactionDate = transaction.date;
       return transactionDate >= startDateStr && transactionDate <= endDateStr;
@@ -83,7 +104,7 @@ export default function ExportRecord() {
 
   const exportToCSV = async () => {
     const filteredTransactions = getFilteredTransactions();
-    
+
     if (filteredTransactions.length === 0) {
       Alert.alert(t('export.no_data_title'), t('export.no_data_message'));
       return;
@@ -132,7 +153,7 @@ export default function ExportRecord() {
     } catch (error: any) {
       if (error.message === 'User did not share') {
         setExportModalVisible(false);
-        if(apakahExporBerhasil) {
+        if (apakahExporBerhasil) {
           Alert.alert(
             t('export.success_title'),
             t('export.success_message', { fileName, selectedDirectory }),
@@ -255,8 +276,8 @@ export default function ExportRecord() {
 
               {/* Directory Selection */}
               <View style={styles.card}>
-                <TouchableOpacity 
-                  style={styles.cardContent} 
+                <TouchableOpacity
+                  style={styles.cardContent}
                   onPress={() => { setDirectoryModalVisible(true) }}
                 >
                   <View style={styles.cardLeft}>
@@ -277,8 +298,8 @@ export default function ExportRecord() {
 
               {/* Date Range Selection */}
               <View style={styles.card}>
-                <TouchableOpacity 
-                  style={styles.cardContent} 
+                <TouchableOpacity
+                  style={styles.cardContent}
                   onPress={() => setDateRangeModalVisible(true)}
                 >
                   <View style={styles.cardLeft}>
@@ -298,16 +319,16 @@ export default function ExportRecord() {
               </View>
 
               {/* Export Button */}
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={[styles.exportButton, isExporting && styles.exportButtonDisabled]}
                 onPress={() => setExportModalVisible(true)}
                 disabled={isExporting}
               >
                 <View style={styles.exportButtonContent}>
-                  <Ionicons 
-                    name={isExporting ? "hourglass-outline" : "download-outline"} 
-                    size={24} 
-                    color="#fff" 
+                  <Ionicons
+                    name={isExporting ? "hourglass-outline" : "download-outline"}
+                    size={24}
+                    color="#fff"
                   />
                   <Text style={styles.exportButtonText}>
                     {isExporting ? t('export.exporting') : t('export.export_to_csv')}
@@ -377,7 +398,7 @@ export default function ExportRecord() {
                 <View style={styles.dateRangeContent}>
                   <View style={styles.dateInputContainer}>
                     <Text style={styles.dateLabel}>{t('export.start_date')}</Text>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.dateButton}
                       onPress={() => setShowStartDatePicker(true)}
                     >
@@ -390,7 +411,7 @@ export default function ExportRecord() {
 
                   <View style={styles.dateInputContainer}>
                     <Text style={styles.dateLabel}>{t('export.end_date')}</Text>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={styles.dateButton}
                       onPress={() => setShowEndDatePicker(true)}
                     >
@@ -402,7 +423,7 @@ export default function ExportRecord() {
                   </View>
 
                   <View style={styles.quickDateButtons}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                       style={[styles.quickDateButton, selectedQuickRange === '7days' && styles.quickDateButtonSelected]}
                       onPress={() => {
                         const end = new Date();
@@ -446,7 +467,7 @@ export default function ExportRecord() {
                     </TouchableOpacity>
                   </View>
 
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.confirmDateButton}
                     onPress={() => setDateRangeModalVisible(false)}
                   >
@@ -476,9 +497,9 @@ export default function ExportRecord() {
                   <View style={styles.confirmationIconContainer}>
                     <Ionicons name="document-text-outline" size={48} color="#007bff" />
                   </View>
-                  
+
                   <Text style={styles.confirmationTitle}>{t('export.export_transactions')}</Text>
-                  
+
                   <View style={styles.exportDetailsContainer}>
                     <View style={styles.exportDetailRow}>
                       <Ionicons name="stats-chart-outline" size={20} color="#666" />
@@ -487,7 +508,7 @@ export default function ExportRecord() {
                         {stats.totalTransactions} {t('export.records')}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.exportDetailRow}>
                       <Ionicons name="calendar-outline" size={20} color="#666" />
                       <Text style={styles.exportDetailText}>
@@ -495,7 +516,7 @@ export default function ExportRecord() {
                         {dateUtils.formatDateShort(dateRange.startDate, i18n.language)} - {dateUtils.formatDateShort(dateRange.endDate, i18n.language)}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.exportDetailRow}>
                       <Ionicons name="folder-outline" size={20} color="#666" />
                       <Text style={styles.exportDetailText}>
@@ -503,7 +524,7 @@ export default function ExportRecord() {
                         {selectedDirectory}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.exportDetailRow}>
                       <Ionicons name="trending-up-outline" size={20} color="#28a745" />
                       <Text style={styles.exportDetailText}>
@@ -511,7 +532,7 @@ export default function ExportRecord() {
                         {uangUtils.formatAmount(stats.totalIncome, mataUang)}
                       </Text>
                     </View>
-                    
+
                     <View style={styles.exportDetailRow}>
                       <Ionicons name="trending-down-outline" size={20} color="#dc3545" />
                       <Text style={styles.exportDetailText}>
@@ -520,21 +541,21 @@ export default function ExportRecord() {
                       </Text>
                     </View>
                   </View>
-                  
+
                   <Text style={styles.confirmationText}>
                     {t('export.csv_file_message')}
                   </Text>
-                  
+
                   <View style={styles.confirmationButtons}>
-                    <TouchableOpacity 
-                      style={styles.cancelButton} 
+                    <TouchableOpacity
+                      style={styles.cancelButton}
                       onPress={() => setExportModalVisible(false)}
                     >
                       <Ionicons name="close-outline" size={20} color="#666" style={styles.buttonIcon} />
                       <Text style={styles.cancelButtonText}>{t('export.cancel')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                      style={styles.confirmButton} 
+                    <TouchableOpacity
+                      style={styles.confirmButton}
                       onPress={exportToCSV}
                     >
                       <Ionicons name="download-outline" size={20} color="#fff" style={styles.buttonIcon} />

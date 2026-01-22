@@ -11,6 +11,7 @@ const NOTIFIKASI_KEY = "moneypal_daily_reminder";
 const WAKTU_NOTIFIKASI_KEY = "moneypal_daily_reminder_time";
 const PIN_KEY = "moneypal_pin";
 const LANG_KEY = 'moneypal_language';
+const HAS_LAUNCHED_KEY = 'moneypal_has_launched';
 
 export const storageUtils = {
   // Save all transactions
@@ -292,6 +293,24 @@ export const storageUtils = {
       await AsyncStorage.setItem(LANG_KEY, bahasa);
     } catch (error) {
       console.error('Error saving language:', error);
+    }
+  },
+
+  async checkIsFirstLaunch(): Promise<boolean> {
+    try {
+      const hasLaunched = await AsyncStorage.getItem(HAS_LAUNCHED_KEY);
+      return hasLaunched === null;
+    } catch (error) {
+      console.error('Error checking first launch:', error);
+      return false; // Assume not first launch on error to be safe
+    }
+  },
+
+  async setHasLaunched(): Promise<void> {
+    try {
+      await AsyncStorage.setItem(HAS_LAUNCHED_KEY, 'true');
+    } catch (error) {
+      console.error('Error setting has launched:', error);
     }
   }
 }; 

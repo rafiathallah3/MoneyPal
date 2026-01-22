@@ -8,6 +8,7 @@ import { Alert, Text, TextInput } from 'react-native';
 import '../utils/i18n';
 import DrawerContent from './components/DrawerContent';
 import LockScreen from './components/LockScreen';
+import Welcome from './welcome';
 
 const Drawer = createDrawerNavigator();
 
@@ -38,6 +39,7 @@ function TabsStack() {
             <Stack.Screen name="exportRecord" options={{ headerShown: false }} />
             <Stack.Screen name="backup" options={{ headerShown: false }} />
             <Stack.Screen name="restore" options={{ headerShown: false }} />
+            <Stack.Screen name="welcome" options={{ headerShown: false }} />
         </Stack>
     );
 }
@@ -49,11 +51,28 @@ export default function RootLayout() {
 
     const [pinAsli, setPin] = React.useState("");
     const [isUnlocked, setIsUnlocked] = React.useState(true);
+    const [showWelcome, setShowWelcome] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(true);
 
     useEffect(() => {
         (async () => {
-            setPin(await storageUtils.dapatinPin());
-            setIsUnlocked(pinAsli !== "");
+            try {
+                // Check if first launch
+                const isFirstLaunch = await storageUtils.checkIsFirstLaunch();
+                if (isFirstLaunch) {
+                    setShowWelcome(true);
+                    setIsLoading(false);
+                    return;
+                }
+
+                const storedPin = await storageUtils.dapatinPin();
+                setPin(storedPin);
+                setIsUnlocked(storedPin === "");
+            } catch (e) {
+                console.error("Error in RootLayout init", e);
+            } finally {
+                setIsLoading(false);
+            }
         })();
     }, []);
 
@@ -69,6 +88,21 @@ export default function RootLayout() {
             },
         ]);
     };
+
+    const onWelcomeFinish = async () => {
+        const storedPin = await storageUtils.dapatinPin();
+        setPin(storedPin);
+        setIsUnlocked(true); // Unlock automatically after setup
+        setShowWelcome(false);
+    }
+
+    if (isLoading) {
+        return null; // Or a splash screen
+    }
+
+    if (showWelcome) {
+        return <Welcome onDismiss={onWelcomeFinish} />;
+    }
 
     if (!isUnlocked && pinAsli !== "") {
         return <LockScreen pinAsli={pinAsli} onUnlock={() => setIsUnlocked(true)} />;

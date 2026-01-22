@@ -8,10 +8,11 @@ import { Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'r
 interface HeaderAplikasiProps {
     subtitle: string,
     pageUtama: boolean,
-    icon: string
+    icon: string,
+    onBack?: () => void
 }
 
-const HeaderPageUtama = ({subtitle, topPadding}: { subtitle: string, topPadding: number }) => {
+const HeaderPageUtama = ({ subtitle, topPadding }: { subtitle: string, topPadding: number }) => {
     const navigation = useNavigation<DrawerNavigationProp<any>>();
 
     return (
@@ -31,14 +32,20 @@ const HeaderPageUtama = ({subtitle, topPadding}: { subtitle: string, topPadding:
     )
 }
 
-const HeaderSidePage = ({ subtitle, topPadding, icon }: { subtitle: string, topPadding: number, icon: string }) => {
+const HeaderSidePage = ({ subtitle, topPadding, icon, onBack }: { subtitle: string, topPadding: number, icon: string, onBack?: () => void }) => {
     const router = useRouter();
 
     return (
         <View style={[styles.headerRow, { paddingTop: topPadding, backgroundColor: "transparent", borderBottomWidth: 0 }]}>
-            <TouchableOpacity 
-                style={styles.backButton} 
-                onPress={() => router.back()}
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => {
+                    if (onBack) {
+                        onBack();
+                    } else {
+                        router.back();
+                    }
+                }}
             >
                 <Ionicons name="arrow-back" size={24} color="#007bff" />
             </TouchableOpacity>
@@ -50,13 +57,13 @@ const HeaderSidePage = ({ subtitle, topPadding, icon }: { subtitle: string, topP
     )
 }
 
-export default function HeaderAplikasi({ subtitle, pageUtama = true, icon = '' }: HeaderAplikasiProps) {
+export default function HeaderAplikasi({ subtitle, pageUtama = true, icon = '', onBack }: HeaderAplikasiProps) {
     const topPadding = Platform.OS === 'android' ? StatusBar.currentHeight || 24 : 44;
-    
+
     return pageUtama ? (
         <HeaderPageUtama subtitle={subtitle} topPadding={topPadding} />
     ) : (
-        <HeaderSidePage subtitle={subtitle} topPadding={topPadding} icon={icon} />
+        <HeaderSidePage subtitle={subtitle} topPadding={topPadding} icon={icon} onBack={onBack} />
     );
 }
 
