@@ -1,10 +1,10 @@
 import { lightTheme as theme } from '@/utils/themes';
 import { Ionicons } from '@expo/vector-icons';
 import { Router } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, InteractionManager, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// import { RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
+import { Alert, Image, InteractionManager, Linking, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 interface DrawerContentProps {
   navigation: any;
@@ -13,46 +13,51 @@ interface DrawerContentProps {
 }
 
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.anonymous.MoneyPal'; // Replace with your app's Play Store URL
-// const adUnitId = __DEV__ ? 'ca-app-pub-8697291704601178/8757284692' : 'ca-app-pub-8697291704601178/8757284692';
-// const rewarded = RewardedAd.createForAdRequest(adUnitId, {
-//   keywords: ['fashion', 'clothing'],
-// });
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-8697291704601178/8757284692';
+const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+  keywords: ['fashion', 'clothing'],
+});
 
 const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpenses }) => {
-  // const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [showThankYouModal, setShowThankYouModal] = useState(false);
 
-  // useEffect(() => {
-  //   const unsubscribeLoaded = rewarded.addAdEventListener(
-  //     RewardedAdEventType.LOADED,
-  //     () => {
-  //       setLoaded(true);
-  //     }
-  //   );
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        setLoaded(true);
+        console.log("Sudah siap");
+      }
+    );
 
-  //   const unsubscribeEarned = rewarded.addAdEventListener(
-  //     RewardedAdEventType.EARNED_REWARD,
-  //     reward => {
-  //       Alert.alert('Thank You!', 'Thanks for the support!');
-  //       setLoaded(false);
-  //       rewarded.load();
-  //     }
-  //   );
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      reward => {
+        // Alert.alert('Thank You!', 'Thanks for the support!');
+        setShowThankYouModal(true);
+        setLoaded(false);
+        console.log('Dapat!', reward);
+        rewarded.load();
+      }
+    );
 
-  //   rewarded.load();
+    console.log('Dapatin');
+    rewarded.load();
 
-  //   return () => {
-  //     unsubscribeLoaded();
-  //     unsubscribeEarned();
-  //   };
-  // }, []);
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
 
-  // const showAd = () => {
-  //   if (loaded) {
-  //     rewarded.show();
-  //   } else {
-  //     Alert.alert('Not Ready', 'The ad is still loading. Please try again in a moment.');
-  //   }
-  // };
+  const showAd = () => {
+    if (loaded) {
+      rewarded.show();
+    } else {
+      Alert.alert('Not Ready', 'The ad is still loading. Please try again in a moment.');
+    }
+  };
 
   const KePage = (arah: string) => {
     navigation.closeDrawer();
@@ -145,7 +150,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
         </TouchableOpacity>
 
         {/* Support Button, add feature to watch an ad once the button is clicked  */}
-        <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]}>
+        <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]} onPress={showAd} disabled={!loaded}>
           <View style={[styles.iconContainer, { backgroundColor: '#e0f7fa' }]}>
             <Ionicons name="star-outline" size={20} color="#00bcd4" />
           </View>
@@ -153,6 +158,32 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
           <Ionicons name="chevron-forward" size={16} color={theme.divider} />
         </TouchableOpacity>
       </View>
+
+      {/* Thank You Modal */}
+      <Modal
+        visible={showThankYouModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowThankYouModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: theme.card }]}>
+            <View style={styles.iconContainerModal}>
+              <Ionicons name="heart" size={50} color="#ff4081" />
+            </View>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>{t('drawer.thank_you') || 'Thank You!'}</Text>
+            <Text style={[styles.modalText, { color: theme.textSecondary }]}>
+              {t('drawer.thank_you_desc') || 'Thanks for the support! Your contribution helps us improve the app.'}
+            </Text>
+            <TouchableOpacity
+              style={[styles.closeButton, { backgroundColor: theme.primary }]}
+              onPress={() => setShowThankYouModal(false)}
+            >
+              <Text style={styles.closeButtonText}>{t('general.close') || 'Close'}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -254,6 +285,61 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#9e9e9e',
     fontWeight: '400',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  iconContainerModal: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#fce4ec',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 22,
+  },
+  closeButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

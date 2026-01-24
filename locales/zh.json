@@ -223,7 +223,9 @@
         "backup": "备份",
         "restore": "恢复",
         "support": "支持",
-        "rate_app": "评价应用"
+        "rate_app": "评价应用",
+        "thank_you": "感谢",
+        "thank_you_desc": "感谢您的支持！您的贡献有助于我们改进应用。"
     },
     "summary": {
         "Day": "日",

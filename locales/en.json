@@ -223,7 +223,9 @@
 		"backup": "Backup",
 		"restore": "Restore",
 		"support": "Support",
-		"rate_app": "Rate App"
+		"rate_app": "Rate App",
+		"thank_you": "Thank You",
+		"thank_you_desc": "Thanks for the support! Your contribution helps us improve the app."
 	},
 	"summary": {
 		"Day": "Day",

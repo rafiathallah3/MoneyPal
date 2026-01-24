@@ -47,6 +47,13 @@
         {
           "photosPermission": "The app accesses your photos to let you add images to transactions."
         }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8697291704601178~6146599077",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+        }
       ]
     ],
     "experiments": {

@@ -223,7 +223,9 @@
 		"backup": "バックアップ",
 		"restore": "復元",
 		"support": "サポート",
-		"rate_app": "アプリを評価"
+		"rate_app": "アプリを評価",
+		"thank_you": "ありがとう",
+		"thank_you_desc": "ご支援ありがとうございます！皆様のご支援はアプリの改善に役立ちます。"
 	},
 	"summary": {
 		"Day": "日",

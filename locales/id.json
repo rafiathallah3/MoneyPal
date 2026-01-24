@@ -223,7 +223,9 @@
 		"backup": "Cadangan",
 		"restore": "Pulihkan",
 		"support": "Dukungan",
-		"rate_app": "Rating Aplikasi"
+		"rate_app": "Rating Aplikasi",
+		"thank_you": "Terima kasih",
+		"thank_you_desc": "Terima kasih telah mendukung MoneyPal!"
 	},
 	"summary": {
 		"Day": "Hari",

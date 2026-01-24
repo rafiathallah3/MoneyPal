@@ -223,7 +223,9 @@
         "backup": "Backup",
         "restore": "Restaura",
         "support": "Suporte",
-        "rate_app": "Avalia App"
+        "rate_app": "Avalia App",
+        "thank_you": "Obrigado",
+        "thank_you_desc": "Obrigado ba apoiu! Ita-boot nia kontribuisaun ajuda ami hadi'a aplikasaun"
     },
     "summary": {
         "Day": "Loron",
