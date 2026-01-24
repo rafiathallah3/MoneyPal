@@ -66,19 +66,19 @@ function isSingleEmoji(str: string) {
 }
 
 // Category Modal Component
-function CategoryModal({ 
-    visible, 
-    category, 
-    onSave, 
-    onCancel 
-}: { 
+function CategoryModal({
+    visible,
+    category,
+    onSave,
+    onCancel
+}: {
     visible: boolean;
     category: Category | null;
     onSave: (category: Category) => void;
     onCancel: () => void;
 }) {
     const [formData, setFormData] = useState<Category>({
-        id:  '',
+        id: '',
         name: '',
         icon: '',
         color: '#007bff',
@@ -136,20 +136,20 @@ function CategoryModal({
 
     return (
         <Modal visible={visible} animationType="fade" backdropColor={'transparent'}>
-            <TouchableOpacity 
-                style={styles.modalOverlay} 
-                activeOpacity={1} 
+            <TouchableOpacity
+                style={styles.modalOverlay}
+                activeOpacity={1}
                 onPress={onCancel}
             >
-                <TouchableOpacity 
-                    style={styles.modalContent} 
-                    activeOpacity={1} 
+                <TouchableOpacity
+                    style={styles.modalContent}
+                    activeOpacity={1}
                     onPress={(e) => e.stopPropagation()}
                 >
                     <Text style={styles.modalTitle}>
                         {isEditing ? t('categories.edit_category') : t('categories.add_category')}
                     </Text>
-                    
+
                     <TextInput
                         style={styles.input}
                         placeholder={t('categories.name_placeholder')}
@@ -157,7 +157,7 @@ function CategoryModal({
                         value={formData.name}
                         onChangeText={text => setFormData(prev => ({ ...prev, name: text }))}
                     />
-                    
+
                     <TextInput
                         style={styles.input}
                         placeholder={t('categories.icon_placeholder')}
@@ -165,7 +165,7 @@ function CategoryModal({
                         value={formData.icon}
                         onChangeText={text => setFormData(prev => ({ ...prev, icon: text }))}
                     />
-                    
+
                     {/* Type selector */}
                     <View style={styles.typeSelector}>
                         <TouchableOpacity
@@ -197,13 +197,13 @@ function CategoryModal({
                             </Text>
                         </TouchableOpacity>
                     </View>
-                    
+
                     {/* Color palette */}
-                    <ColorPalette 
-                        selectedColor={formData.color} 
-                        onSelect={color => setFormData(prev => ({ ...prev, color }))} 
+                    <ColorPalette
+                        selectedColor={formData.color}
+                        onSelect={color => setFormData(prev => ({ ...prev, color }))}
                     />
-                    
+
                     <View style={styles.modalActions}>
                         <TouchableOpacity style={styles.cancelBtn} onPress={onCancel}>
                             <Text style={styles.cancelBtnText}>{t('Cancel')}</Text>
@@ -227,7 +227,7 @@ export default function CategoriesScreen() {
     useEffect(() => {
         (async () => {
             await dapat();
-          })();
+        })();
     }, []);
 
     const handleSaveCategory = (category: Category) => {
@@ -259,8 +259,8 @@ export default function CategoriesScreen() {
         Alert.alert(t('categories.delete_title'), t('categories.delete_message'), [
             { text: t('categories.cancel'), style: 'cancel' },
             {
-                text: t('categories.delete'), 
-                style: 'destructive', 
+                text: t('categories.delete'),
+                style: 'destructive',
                 onPress: () => hapus(id)
             }
         ]);
@@ -275,7 +275,7 @@ export default function CategoriesScreen() {
             {/* Show type badge for custom categories */}
             {editable && (
                 <View style={[
-                    styles.typeBadge, 
+                    styles.typeBadge,
                     { backgroundColor: item.type === 'income' ? '#28a745' : '#dc3545' }
                 ]}>
                     <Text style={styles.typeBadgeText}>
@@ -285,14 +285,14 @@ export default function CategoriesScreen() {
             )}
             {editable && (
                 <>
-                    <TouchableOpacity 
-                        onPress={() => handleEditCategory(item)} 
+                    <TouchableOpacity
+                        onPress={() => handleEditCategory(item)}
                         style={styles.editBtn}
                     >
                         <Ionicons name="create-outline" size={20} color="#007bff" />
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        onPress={() => handleDeleteCategory(item.id)} 
+                    <TouchableOpacity
+                        onPress={() => handleDeleteCategory(item.id)}
                         style={styles.deleteBtn}
                     >
                         <Ionicons name="trash-outline" size={20} color="#dc3545" />
@@ -417,21 +417,21 @@ const styles = StyleSheet.create({
     categoryName: { fontSize: 16, color: '#2c3e50', flex: 1 },
     editBtn: { marginHorizontal: 6 },
     deleteBtn: { marginHorizontal: 6 },
-    addBtn: { 
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        backgroundColor: '#007bff', 
-        borderRadius: 20, 
-        paddingVertical: 10, 
-        paddingHorizontal: 18, 
-        alignSelf: 'center', 
-        marginTop: 15, 
-        marginBottom: 0, 
-        shadowColor: '#007bff', 
-        shadowOffset: { width: 0, height: 2 }, 
-        shadowOpacity: 0.12, 
-        shadowRadius: 6, 
-        elevation: 2 
+    addBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#007bff',
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 18,
+        alignSelf: 'center',
+        marginTop: 15,
+        marginBottom: 0,
+        shadowColor: '#007bff',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        elevation: 2
     },
     addBtnText: { color: '#fff', fontWeight: '600', fontSize: 16, marginLeft: 8 },
     emptyText: { color: '#adb5bd', fontSize: 15, textAlign: 'center', marginVertical: 20 },
@@ -440,31 +440,31 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    modalContent: { 
-        backgroundColor: '#fff', 
-        borderRadius: 16, 
-        padding: 24, 
-        width: 300, 
-        alignItems: 'stretch' 
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 24,
+        width: 300,
+        alignItems: 'stretch'
     },
-    modalTitle: { 
-        fontSize: 20, 
-        fontWeight: 'bold', 
-        color: '#007bff', 
-        marginBottom: 16, 
-        textAlign: 'center' 
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#007bff',
+        marginBottom: 16,
+        textAlign: 'center'
     },
-    input: { 
-        backgroundColor: '#f1f3f4', 
-        borderRadius: 8, 
-        padding: 10, 
-        fontSize: 16, 
+    input: {
+        backgroundColor: '#f1f3f4',
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 16,
         marginBottom: 12,
     },
     typeSelector: {
-        flexDirection: 'row', 
-        justifyContent: 'center', 
-        marginBottom: 12 
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 12
     },
     typeButton: {
         paddingVertical: 8,
@@ -476,24 +476,24 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 14,
     },
-    modalActions: { 
-        flexDirection: 'row', 
-        justifyContent: 'flex-end', 
-        marginTop: 10 
+    modalActions: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginTop: 10
     },
-    cancelBtn: { 
-        paddingVertical: 8, 
-        paddingHorizontal: 16, 
-        borderRadius: 8, 
-        backgroundColor: '#adb5bd', 
-        marginRight: 10 
+    cancelBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        backgroundColor: '#adb5bd',
+        marginRight: 10
     },
     cancelBtnText: { color: '#fff', fontWeight: '500' },
-    saveBtn: { 
-        paddingVertical: 8, 
-        paddingHorizontal: 16, 
-        borderRadius: 8, 
-        backgroundColor: '#007bff' 
+    saveBtn: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        backgroundColor: '#007bff'
     },
     saveBtnText: { color: '#fff', fontWeight: '500' },
     typeBadge: {

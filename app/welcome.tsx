@@ -20,18 +20,12 @@ import {
 
 import { useMataUang, useNotifikasi } from '@/hooks/usePreference';
 import { requestNotificationPermission, scheduleDailyReminder } from '@/utils/notifikasi';
-import { CURRENCIES } from '@/utils/preferences';
+import { CURRENCIES, LANGUAGES } from '@/utils/preferences';
 import { storageUtils } from '@/utils/storage';
 import i18n from '../utils/i18n';
 import Restore from './restore';
 
 const { width } = Dimensions.get('window');
-
-const LANGUAGES = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'id', label: 'Indonesia', flag: '🇮🇩' },
-    { code: 'ja', label: '日本語', flag: '🇯🇵' },
-];
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -381,7 +375,7 @@ export default function Welcome({ onDismiss }: { onDismiss?: () => void }) {
                                 </TouchableOpacity>
                             </View>
                             <View style={{ flex: 1, alignItems: 'center' }}>
-                                <Text style={styles.headerText}>Step {currentStep + 1} of 4</Text>
+                                <Text style={styles.headerText}>{t('welcome.step', { step: currentStep + 1, total: 4 }) || `Step ${currentStep + 1} of 4`}</Text>
                             </View>
                             <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                 <TouchableOpacity onPress={() => finishSetup("")}>

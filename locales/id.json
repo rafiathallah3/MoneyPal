@@ -19,7 +19,8 @@
 		"notifications_desc": "Biar nggak lupa! Aktifkan pengingat harian untuk mencatat pengeluaran kamu setiap hari jam 20.00.",
 		"enable_notifications": "Aktifkan Notifikasi",
 		"all_set": "Semua Beres!",
-		"all_set_desc": "Semua sudah siap! Yuk mulai catat pengeluaran kamu pakai MoneyPal."
+		"all_set_desc": "Semua sudah siap! Yuk mulai catat pengeluaran kamu pakai MoneyPal.",
+		"step": "Langkah {{step}} dari {{total}}"
 	},
 	"preferences": {
 		"title": "Preferensi",
@@ -34,7 +35,8 @@
 		"privacy": "Kebijakan Privasi",
 		"privacy_sub": "Baca ketentuan privasi kami",
 		"select_currency": "Pilih Mata Uang",
-		"select_language": "Pilih Bahasa"
+		"select_language": "Pilih Bahasa",
+		"privacy_text": "Kami menghormati privasi Anda. Data Anda hanya disimpan di perangkat Anda dan tidak pernah dibagikan kepada pihak ketiga."
 	},
 	"general": {
 		"close": "Tutup",
@@ -126,7 +128,9 @@
 	"by_category": "Berdasarkan Kategori",
 	"expenses": "Pengeluaran",
 	"no_expense_data_for_pie_chart": "Tidak ada data pengeluaran untuk diagram lingkaran.",
+	"no_income_data_for_pie_chart": "Tidak ada data pemasukan untuk diagram lingkaran.",
 	"spending_over_time": "Pengeluaran Seiring Waktu",
+	"income_over_time": "Penghasilan Seiring Waktu",
 	"days_in": "Hari dalam ",
 	"months_in": "Bulan dalam ",
 	"last_12_months": "12 Bulan Terakhir",

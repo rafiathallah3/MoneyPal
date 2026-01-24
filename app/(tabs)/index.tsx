@@ -43,7 +43,7 @@ function formatSummaryDate(date: Date, mode: SummaryMode, bahasa: string): strin
             month: "long",
             day: "numeric",
         };
-          
+
         return date.toLocaleDateString(bahasa, options as any);
     } else if (mode === 'Month') {
         // e.g., July 2025
@@ -175,7 +175,7 @@ export default function MoneyPal() {
             await dapatKategori();
             await dapatTransaksi();
             await dapatBudget();
-          })();
+        })();
     }, []);
 
     useEffect(() => {
@@ -186,14 +186,14 @@ export default function MoneyPal() {
 
     // Load transactions for the selected date/month/year or when allTransactions change
     // useEffect(() => {
-        // filterTransactionsForPeriod(); // This function is no longer needed
+    // filterTransactionsForPeriod(); // This function is no longer needed
     // }, [selectedDate, summaryMode, allTransactions]);
 
     // Memoize filtered transactions to prevent unnecessary re-renders
     const transactionsDiTunjukan = useMemo(() => {
         const dateString = dateUtils.formatDate(selectedDate);
         let filtered: Transaction[] = [];
-        
+
         if (summaryMode === 'Day') {
             filtered = allTransactions.filter(t => t.date === dateString);
         } else if (summaryMode === 'Month') {
@@ -210,7 +210,7 @@ export default function MoneyPal() {
                 return parseInt(tYear) === year;
             });
         }
-        
+
         return filtered;
     }, [selectedDate, summaryMode, allTransactions]);
 
@@ -267,7 +267,7 @@ export default function MoneyPal() {
                 groups[month].push(t);
             });
             // Sort by month (Jan, Feb, ...)
-            
+
             return Object.entries(groups)
                 .sort((a, b) => dateUtils.monthOrder.indexOf(a[0]) - dateUtils.monthOrder.indexOf(b[0]))
                 .map(([title, data]) => ({ title, data }));
@@ -350,7 +350,7 @@ export default function MoneyPal() {
                     mode={t(`summary.${mode}`)}
                     theme={theme}
                     isActive={summaryMode === mode}
-                    onPress={() => { if(summaryMode !== mode) { setLoading(true); setSummaryMode(mode) } }}
+                    onPress={() => { if (summaryMode !== mode) { setLoading(true); setSummaryMode(mode) } }}
                 />
             ))}
         </View>
@@ -371,7 +371,7 @@ export default function MoneyPal() {
                 <View style={styles.dateNavBar}>
                     <TouchableOpacity
                         style={styles.arrowButton}
-                        onPress={() => { setLoading(true); setSelectedDate(addToDate(selectedDate, summaryMode, -1)) } }
+                        onPress={() => { setLoading(true); setSelectedDate(addToDate(selectedDate, summaryMode, -1)) }}
                     >
                         <Ionicons name="chevron-back" size={28} color="#007bff" />
                     </TouchableOpacity>
@@ -384,7 +384,7 @@ export default function MoneyPal() {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.arrowButton}
-                        onPress={() => {setLoading(true); setSelectedDate(addToDate(selectedDate, summaryMode, 1)) }}
+                        onPress={() => { setLoading(true); setSelectedDate(addToDate(selectedDate, summaryMode, 1)) }}
                     >
                         <Ionicons name="chevron-forward" size={28} color="#007bff" />
                     </TouchableOpacity>
@@ -427,15 +427,15 @@ export default function MoneyPal() {
                                 ListEmptyComponent={renderEmptyList}
                                 contentContainerStyle={styles.listContent}
                                 estimatedItemSize={100}
-                                // initialNumToRender={5}
-                                // maxToRenderPerBatch={5}
-                                // updateCellsBatchingPeriod={16}
-                                // windowSize={5}
-                                // getItemLayout={(data, index) => ({
-                                //     length: 80, // Approximate height of TransactionItem
-                                //     offset: 80 * index,
-                                //     index,
-                                // })}
+                            // initialNumToRender={5}
+                            // maxToRenderPerBatch={5}
+                            // updateCellsBatchingPeriod={16}
+                            // windowSize={5}
+                            // getItemLayout={(data, index) => ({
+                            //     length: 80, // Approximate height of TransactionItem
+                            //     offset: 80 * index,
+                            //     index,
+                            // })}
                             />
                         ) : (
                             <SectionList
@@ -463,22 +463,22 @@ export default function MoneyPal() {
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
                 {/* Add/Edit Transaction Modal */}
-                { modalVisible &&
-                <AddTransactionModal
-                    visible={modalVisible}
-                    onClose={() => {
-                        setEditingTransaction(null);
-                        setModalVisible(false);
-                    }}
-                    onSave={handleAddTransaction}
-                    selectedDate={selectedDate}
-                    transaction={editingTransaction || undefined}
-                    onUpdate={handleUpdateTransaction}
-                    mataUang={mataUang}
-                    kategori={kategori}
-                    budgetData={budgetData}
-                />
-                
+                {modalVisible &&
+                    <AddTransactionModal
+                        visible={modalVisible}
+                        onClose={() => {
+                            setEditingTransaction(null);
+                            setModalVisible(false);
+                        }}
+                        onSave={handleAddTransaction}
+                        selectedDate={selectedDate}
+                        transaction={editingTransaction || undefined}
+                        onUpdate={handleUpdateTransaction}
+                        mataUang={mataUang}
+                        kategori={kategori}
+                        budgetData={budgetData}
+                    />
+
                 }
             </SafeAreaView>
         </LinearGradient>

@@ -7,6 +7,16 @@ export const CURRENCIES: MataUang[] = [
     { symbol: '¥', name: 'Japanese Yen' },
     { symbol: 'Rp', name: 'Indonesian Rupiah' },
     { symbol: '₹', name: 'Indian Rupee' },
+    { symbol: 'K', name: 'Myanmar Kyat' },
+];
+
+export const LANGUAGES = [
+    { code: 'en', label: 'English', flag: '🇺🇸' },
+    { code: 'id', label: 'Indonesia', flag: '🇮🇩' },
+    { code: 'ja', label: '日本語', flag: '🇯🇵' },
+    { code: 'zh', label: '中文', flag: '🇨🇳' },
+    { code: 'tl', label: 'Timor-Leste', flag: '🇹🇱' },
+    { code: 'mm', label: 'Myanmar', flag: '🇲🇲' },
 ];
 
 export const uangUtils = {

@@ -1,6 +1,6 @@
 import { useMataUang } from '@/hooks/usePreference';
 import { cancelDailyReminder, requestNotificationPermission, scheduleDailyReminder } from '@/utils/notifikasi';
-import { CURRENCIES } from '@/utils/preferences';
+import { CURRENCIES, LANGUAGES } from '@/utils/preferences';
 import { storageUtils } from '@/utils/storage';
 import { lightTheme as theme } from '@/utils/themes';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,11 +16,6 @@ import HeaderAplikasi from './components/HeaderAplikasi';
 const APP_NAME = 'MoneyPal';
 const APP_VERSION = 'v1.0.8';
 
-const LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'id', label: 'Indonesian' },
-  { code: 'ja', label: 'Japanese' },
-];
 const bahasaTeknologi = Localization.getLocales()[0]?.languageCode || 'en';
 
 export default function Preferences() {
@@ -456,7 +451,7 @@ export default function Preferences() {
                 </TouchableOpacity>
               </View>
               <Text style={[styles.privacyText, { color: theme.text }]}>
-                We respect your privacy. Your data is stored only on your device and is never shared with third parties.
+                {t('preferences.privacy_text')}
               </Text>
               <TouchableOpacity style={[styles.closeButton, { backgroundColor: theme.primary }]} onPress={() => setPrivacyModalVisible(false)}>
                 <Text style={[styles.closeButtonText, { color: theme.textColorInBackground }]}>{t('general.close')}</Text>

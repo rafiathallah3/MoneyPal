@@ -31,11 +31,11 @@ export interface Category {
   icon: string;
   color: string;
   type: 'income' | 'expense';
-} 
+}
 
 export type Tipe_WarnaTema = "sistem" | "dark" | "light";
 
-export type Tipe_MataUang = "$" | "€" | "£" | "¥" | "Rp" | "₹";
+export type Tipe_MataUang = "$" | "€" | "£" | "¥" | "Rp" | "₹" | "K";
 
 export interface MataUang {
   symbol: Tipe_MataUang,

@@ -19,7 +19,8 @@
 		"notifications_desc": "Stay on track! Enable daily reminders to record your expenses at 20:00 every day.",
 		"enable_notifications": "Enable Notifications",
 		"all_set": "All Set!",
-		"all_set_desc": "You're all set! Start tracking your expenses with MoneyPal."
+		"all_set_desc": "You're all set! Start tracking your expenses with MoneyPal.",
+		"step": "Step {{step}} of {{total}}"
 	},
 	"preferences": {
 		"title": "Preferences",
@@ -34,7 +35,8 @@
 		"privacy": "Privacy Policy",
 		"privacy_sub": "Read our privacy terms",
 		"select_currency": "Select Currency",
-		"select_language": "Select Language"
+		"select_language": "Select Language",
+		"privacy_text": "We respect your privacy. Your data is stored only on your device and is never shared with third parties."
 	},
 	"general": {
 		"close": "Close",
@@ -126,7 +128,9 @@
 	"by_category": "By Category",
 	"expenses": "Expenses",
 	"no_expense_data_for_pie_chart": "No expense data for pie chart.",
+	"no_income_data_for_pie_chart": "No income data for pie chart.",
 	"spending_over_time": "Spending Over Time",
+	"income_over_time": "Income Over Time",
 	"days_in": "Days in ",
 	"months_in": "Months in ",
 	"last_12_months": "Last 12 Months",

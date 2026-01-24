@@ -19,7 +19,8 @@
 		"notifications_desc": "忘れ防止に！毎日20:00に支出を記録するリマインダーを有効にしましょう。",
 		"enable_notifications": "通知を有効にする",
 		"all_set": "準備完了！",
-		"all_set_desc": "これで準備OK！MoneyPalで支出管理を始めましょう。"
+		"all_set_desc": "これで準備OK！MoneyPalで支出管理を始めましょう。",
+		"step": "ステップ {{step}} / {{total}}"
 	},
 	"preferences": {
 		"title": "環境設定",
@@ -34,7 +35,8 @@
 		"privacy": "プライバシーポリシー",
 		"privacy_sub": "当社のプライバシー条項をお読みください",
 		"select_currency": "通貨を選択",
-		"select_language": "言語を選択"
+		"select_language": "言語を選択",
+		"privacy_text": "私たちはあなたのプライバシーを尊重します。あなたのデータはあなたのデバイスにのみ保存され、第三者と共有されることはありません。"
 	},
 	"general": {
 		"close": "閉じる",
@@ -126,7 +128,9 @@
 	"by_category": "カテゴリ別",
 	"expenses": "経費",
 	"no_expense_data_for_pie_chart": "円グラフの経費データがありません。",
+	"no_income_data_for_pie_chart": "円グラフの収入データがありません。",
 	"spending_over_time": "経時的な支出",
+	"income_over_time": "収入の推移",
 	"days_in": "日（",
 	"months_in": "月（",
 	"last_12_months": "過去12か月",

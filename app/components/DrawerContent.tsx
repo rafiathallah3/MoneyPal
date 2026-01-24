@@ -4,6 +4,7 @@ import { Router } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Image, InteractionManager, Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// import { RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
 
 interface DrawerContentProps {
   navigation: any;
@@ -12,8 +13,47 @@ interface DrawerContentProps {
 }
 
 const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.anonymous.MoneyPal'; // Replace with your app's Play Store URL
+// const adUnitId = __DEV__ ? 'ca-app-pub-8697291704601178/8757284692' : 'ca-app-pub-8697291704601178/8757284692';
+// const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+//   keywords: ['fashion', 'clothing'],
+// });
 
 const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpenses }) => {
+  // const [loaded, setLoaded] = useState(false);
+
+  // useEffect(() => {
+  //   const unsubscribeLoaded = rewarded.addAdEventListener(
+  //     RewardedAdEventType.LOADED,
+  //     () => {
+  //       setLoaded(true);
+  //     }
+  //   );
+
+  //   const unsubscribeEarned = rewarded.addAdEventListener(
+  //     RewardedAdEventType.EARNED_REWARD,
+  //     reward => {
+  //       Alert.alert('Thank You!', 'Thanks for the support!');
+  //       setLoaded(false);
+  //       rewarded.load();
+  //     }
+  //   );
+
+  //   rewarded.load();
+
+  //   return () => {
+  //     unsubscribeLoaded();
+  //     unsubscribeEarned();
+  //   };
+  // }, []);
+
+  // const showAd = () => {
+  //   if (loaded) {
+  //     rewarded.show();
+  //   } else {
+  //     Alert.alert('Not Ready', 'The ad is still loading. Please try again in a moment.');
+  //   }
+  // };
+
   const KePage = (arah: string) => {
     navigation.closeDrawer();
     InteractionManager.runAfterInteractions(() => {
@@ -104,7 +144,7 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
           <Ionicons name="chevron-forward" size={16} color={theme.divider} />
         </TouchableOpacity>
 
-        {/* Support Button */}
+        {/* Support Button, add feature to watch an ad once the button is clicked  */}
         <TouchableOpacity style={[styles.menuItem, { backgroundColor: theme.card }]}>
           <View style={[styles.iconContainer, { backgroundColor: '#e0f7fa' }]}>
             <Ionicons name="star-outline" size={20} color="#00bcd4" />
