@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import en from '../locales/en.json';
 import id from '../locales/id.json';
 import ja from '../locales/ja.json';
+import jv from '../locales/jv.json';
 import mm from '../locales/mm.json';
 import tl from '../locales/tl.json';
 import zh from '../locales/zh.json';
@@ -15,6 +16,7 @@ const resources = {
   en: { translation: en },
   id: { translation: id },
   ja: { translation: ja },
+  jv: { translation: jv },
   zh: { translation: zh },
   tl: { translation: tl },
   mm: { translation: mm },
