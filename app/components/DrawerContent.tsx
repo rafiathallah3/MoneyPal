@@ -27,7 +27,6 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
             RewardedAdEventType.LOADED,
             () => {
                 setLoaded(true);
-                console.log("Sudah siap");
             }
         );
 
@@ -37,12 +36,10 @@ const DrawerContent: React.FC<DrawerContentProps> = ({ navigation, onResetExpens
                 // Alert.alert('Thank You!', 'Thanks for the support!');
                 setShowThankYouModal(true);
                 setLoaded(false);
-                console.log('Dapat!', reward);
                 rewarded.load();
             }
         );
 
-        console.log('Dapatin');
         rewarded.load();
 
         return () => {

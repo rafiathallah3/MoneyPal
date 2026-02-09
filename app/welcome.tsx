@@ -29,7 +29,10 @@ const { width } = Dimensions.get('window');
 
 if (Platform.OS === 'android') {
     if (UIManager.setLayoutAnimationEnabledExperimental) {
-        UIManager.setLayoutAnimationEnabledExperimental(true);
+        // @ts-ignore
+        if (!global.nativeFabricUIManager) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
     }
 }
 

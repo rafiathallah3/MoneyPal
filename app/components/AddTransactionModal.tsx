@@ -63,6 +63,8 @@ export default function AddTransactionModal({
     const { t, i18n } = useTranslation();
 
     React.useEffect(() => {
+        if (!visible) return; // Don't update state if not visible
+
         if (isEditMode && transaction) {
             setFormData({
                 title: transaction.title,
@@ -86,7 +88,7 @@ export default function AddTransactionModal({
             setSelectedImage(null);
             setUneditedAmount(0);
         }
-    }, [transaction, visible, selectedDate]);
+    }, [visible, transaction, selectedDate]);
 
     const handleDateChange = (event: any, date?: Date) => {
         setShowDatePicker(Platform.OS === 'ios');
@@ -155,7 +157,7 @@ export default function AddTransactionModal({
             ]
         );
     };
-        
+
 
     const removeImage = () => {
         setSelectedImage(null);
@@ -218,20 +220,20 @@ export default function AddTransactionModal({
     let budgetLimit = 0;
     if (formData.type === 'expense' && budgetData) {
         const monthStr = dateUtils.getMonthString(selectedDate);
-        if(budgetData.budget[monthStr]) {
+        if (budgetData.budget[monthStr]) {
             budgetLimit = budgetData.budget[monthStr].find(l => l.categoryId === 'all')?.amount ?? 0;
-        } else if(budgetData.default["all"] > 0) {
+        } else if (budgetData.default["all"] > 0) {
             budgetLimit = budgetData.default["all"]
         }
 
-        if(budgetLimit > 0) {
+        if (budgetLimit > 0) {
             spentThisMonth = transactions
                 .filter(t => t.type === 'expense' && t.date.startsWith(monthStr))
                 .reduce((sum, t) => sum + t.amount, 0);
             const inputAmount = parseFloat(formData.amount);
             if (!isNaN(inputAmount) && inputAmount > 0) {
                 remainingBudget = budgetLimit - spentThisMonth - inputAmount;
-                if(isEditMode && uneditedAmount > 0) {
+                if (isEditMode && uneditedAmount > 0) {
                     remainingBudget += uneditedAmount;
                 }
             }

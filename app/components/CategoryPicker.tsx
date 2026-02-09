@@ -103,8 +103,9 @@ export default function CategoryPicker({
     const { t, i18n } = useTranslation();
 
     useEffect(() => {
+        if (!visible) return;
         dapat();
-    }, []);
+    }, [visible, dapat]);
 
     // Sort so 'Other' is last
     const categories = [

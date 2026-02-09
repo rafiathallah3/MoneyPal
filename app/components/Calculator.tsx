@@ -40,10 +40,9 @@ export default function Calculator({ visible, onClose, onConfirm, initialValue =
     const { t } = useTranslation();
 
     useEffect(() => {
-        if (visible) {
-            setDisplay(initialValue);
-        }
-    }, [visible])
+        if (!visible) return; // Don't reset state if not visible
+        setDisplay(initialValue);
+    }, [visible, initialValue]);
 
     // Helper function to count digits (excluding decimal point)
     const countDigits = (value: string): number => {

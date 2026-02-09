@@ -104,6 +104,7 @@ function SummaryModeButton({ mode, theme, isActive, onPress }: { mode: string, t
 
 export default function MoneyPal() {
     const { kategori, dapat: dapatKategori } = useKategori();
+    const { t, i18n } = useTranslation();
     const { mataUang, dapat: dapatMataUang } = useMataUang();
     const { budgetData, dapat: dapatBudget } = useBudget();
     const { transactions: allTransactions, dapat: dapatTransaksi, tambah, update, hapus } = useTransactions();
@@ -237,14 +238,15 @@ export default function MoneyPal() {
         };
     }, [transactionsDiTunjukan]);
 
-    // Group transactions for SectionList
-    const groupTransactionsForSectionList = useCallback(() => {
+    // Memoize grouped transactions for SectionList
+    const groupedTransactions = useMemo(() => {
         if (summaryMode === 'Month') {
             // Group by day
             const groups: { [date: string]: Transaction[] } = {};
             transactionsDiTunjukan.forEach(t => {
                 const dateObj = dateUtils.parseDate(t.date);
-
+                // Optimize: Use date string as key to avoid locale string overhead for key
+                // But keeping current logic for now to ensure consistency with section headers
                 const sectionTitle = dateObj.toLocaleDateString(i18n.language, { month: "long", day: "numeric" });
                 if (!groups[sectionTitle]) groups[sectionTitle] = [];
                 groups[sectionTitle].push(t);
@@ -252,9 +254,14 @@ export default function MoneyPal() {
             // Sort by day ascending
             return Object.entries(groups)
                 .sort((a, b) => {
-                    const aDay = parseInt(a[0]);
-                    const bDay = parseInt(b[0]);
-                    return aDay - bDay;
+                    // Extract day number from the date string if possible, or fallback
+                    // This sort logic seems to rely on the key being "Month Day" format
+                    // Ideally we should use a timestamp or ISO date as the sort key
+                    // For now, let's keep the existing logic but memoized
+                    // A better approach: sort based on the first transaction's date in the group
+                    const dateA = dateUtils.parseDate(a[1][0].date);
+                    const dateB = dateUtils.parseDate(b[1][0].date);
+                    return dateA.getDate() - dateB.getDate();
                 })
                 .map(([title, data]) => ({ title, data }));
         } else if (summaryMode === 'Year') {
@@ -266,14 +273,13 @@ export default function MoneyPal() {
                 if (!groups[month]) groups[month] = [];
                 groups[month].push(t);
             });
-            // Sort by month (Jan, Feb, ...)
 
             return Object.entries(groups)
                 .sort((a, b) => dateUtils.monthOrder.indexOf(a[0]) - dateUtils.monthOrder.indexOf(b[0]))
                 .map(([title, data]) => ({ title, data }));
         }
         return [];
-    }, [summaryMode, transactionsDiTunjukan]);
+    }, [summaryMode, transactionsDiTunjukan, i18n.language]);
 
     const renderSectionHeader = useCallback(({ section }: { section: { title: string } }) => (
         <View style={styles.fancySectionHeader}>
@@ -330,7 +336,6 @@ export default function MoneyPal() {
         />
     }, [mataUang, theme, kategori, handleDeleteTransaction, handleEditTransaction]);
 
-    const { t, i18n } = useTranslation();
     const renderEmptyList = useCallback(() => (
         <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>{t('no_transactions_for_this_summary_mode')}</Text>
@@ -440,7 +445,7 @@ export default function MoneyPal() {
                         ) : (
                             <SectionList
                                 style={[{ flex: 1 }, animatedStyle]}
-                                sections={groupTransactionsForSectionList()}
+                                sections={groupedTransactions}
                                 renderItem={renderTransactionItem}
                                 renderSectionHeader={renderSectionHeader}
                                 keyExtractor={keyExtractor}
@@ -463,23 +468,20 @@ export default function MoneyPal() {
                     <Text style={styles.addButtonText}>+</Text>
                 </TouchableOpacity>
                 {/* Add/Edit Transaction Modal */}
-                {modalVisible &&
-                    <AddTransactionModal
-                        visible={modalVisible}
-                        onClose={() => {
-                            setEditingTransaction(null);
-                            setModalVisible(false);
-                        }}
-                        onSave={handleAddTransaction}
-                        selectedDate={selectedDate}
-                        transaction={editingTransaction || undefined}
-                        onUpdate={handleUpdateTransaction}
-                        mataUang={mataUang}
-                        kategori={kategori}
-                        budgetData={budgetData}
-                    />
-
-                }
+                <AddTransactionModal
+                    visible={modalVisible}
+                    onClose={() => {
+                        setEditingTransaction(null);
+                        setModalVisible(false);
+                    }}
+                    onSave={handleAddTransaction}
+                    selectedDate={selectedDate}
+                    transaction={editingTransaction || undefined}
+                    mataUang={mataUang}
+                    kategori={kategori}
+                    budgetData={budgetData || { budget: {}, default: { all: 0 } }}
+                    onUpdate={handleUpdateTransaction}
+                />
             </SafeAreaView>
         </LinearGradient>
     );
