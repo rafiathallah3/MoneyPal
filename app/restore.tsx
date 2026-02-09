@@ -30,6 +30,7 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
             const [res] = await pick({ type: [DocumentPickerTypes.allFiles] });
             if (!res || !res.uri) return;
 
+            setIsRestoring(true);
             const fileContent = await RNFS.readFile(res.uri.replace('file://', ''), 'utf8');
             let data;
             try {
@@ -46,9 +47,11 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
 
             setParsedData(data);
             Alert.alert(t('restore.loaded_title'), t('restore.loaded_desc'));
+            setIsRestoring(false);
         } catch (e: any) {
             console.log(e, "ERROR SAAT PICKING FILE");
             Alert.alert(t('restore.error_title'), t('restore.error_desc'));
+            setIsRestoring(false);
         }
     };
 
@@ -80,7 +83,6 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
             const newTransactions: Transaction[] = [];
             setProgress({ current: 0, total: totalTransactions });
 
-            console.log("Mengalokasi transaksi")
             for (let i = 0; i < totalTransactions; i++) {
                 const t = parsedData.transactions[i];
                 const newT: Transaction = { ...t };
@@ -90,14 +92,12 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
                 newTransactions.push(newT);
                 setProgress({ current: i + 1, total: totalTransactions });
             }
-            console.log("Sudah selesai");
 
             // Bulk save all restored transactions at once for better performance
             await storageUtils.saveTransactions(newTransactions);
             // Refresh in-memory store so other screens see the restored data
             await dapatTransaksi();
 
-            console.log("ALERT!!");
             Alert.alert(t('restore.restore_successful_title'), t('restore.restore_successful_desc'));
             setParsedData(null);
             onDone?.();
