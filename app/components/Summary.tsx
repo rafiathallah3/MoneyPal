@@ -1,8 +1,9 @@
+import { Text } from '@/app/components/StyledText';
 import { uangUtils } from '@/utils/preferences';
 import { WarnaTema } from '@/utils/themes';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { DailySummary, MataUang } from '../../types/types';
 
 interface SummaryProps {

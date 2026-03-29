@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useMataUang } from '@/hooks/usePreference';
 import { cancelDailyReminder, requestNotificationPermission, scheduleDailyReminder } from '@/utils/notifikasi';
 import { CURRENCIES, LANGUAGES } from '@/utils/preferences';
@@ -7,14 +8,15 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Localization from 'expo-localization';
+import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Modal, Pressable, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import i18n from '../utils/i18n';
 import HeaderAplikasi from './components/HeaderAplikasi';
-
 const APP_NAME = 'MoneyPal';
-const APP_VERSION = 'v1.0.9';
+const APP_VERSION = 'v1.1.0';
 
 const bahasaTeknologi = Localization.getLocales()[0]?.languageCode || 'en';
 
@@ -23,6 +25,7 @@ export default function Preferences() {
 
     // const { tema, theme, dapat: dapatTema, ganti: gantiTema } = useTheme();
     const { mataUang, ganti } = useMataUang();
+    const insets = useSafeAreaInsets();
     const [settingNotifikasi, setSettingNotifikasi] = useState<{ opsi: boolean, waktu: { hour: number, minute: number } }>({
         opsi: false,
         waktu: { hour: 20, minute: 0 }
@@ -98,11 +101,16 @@ export default function Preferences() {
     return (
         <LinearGradient colors={theme.linearGradientBackground} style={{ flex: 1 }}>
             <View style={styles.container}>
+                <StatusBar style="dark" />
                 {/* Header with Back Button */}
                 <HeaderAplikasi subtitle={t('preferences.title')} pageUtama={false} icon='settings-outline' />
 
                 {/* Settings Cards */}
-                <View style={styles.settingsContainer}>
+                <ScrollView
+                    style={{ flex: 1 }}
+                    contentContainerStyle={styles.settingsContainer}
+                    showsVerticalScrollIndicator={false}
+                >
                     {/* Theme Card */}
                     {/* <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.divider }]}> 
             <TouchableOpacity style={styles.cardContent} onPress={() => setThemeModalVisible(true)}>
@@ -254,7 +262,7 @@ export default function Preferences() {
                             <Ionicons name="chevron-forward" size={20} color={theme.divider} />
                         </TouchableOpacity>
                     </View>
-                </View>
+                </ScrollView>
 
                 {/* Currency Modal */}
                 <Modal
@@ -571,7 +579,7 @@ export default function Preferences() {
 
                 {/* Footer */}
                 <View style={styles.footer}>
-                    <View style={styles.footerContent}>
+                    <View style={[styles.footerContent, { paddingBottom: Math.max(insets.bottom, 24) }]}>
                         <Text style={[styles.footerAppName, { color: theme.primary }]}>{APP_NAME}</Text>
                         <Text style={[styles.footerVersion, { color: theme.textSecondary }]}>{t('general.version')} {APP_VERSION}</Text>
                         <Text style={[styles.footerDev, { color: theme.textSecondary }]}>{t('general.developed_by')}</Text>

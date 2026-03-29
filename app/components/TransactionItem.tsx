@@ -1,9 +1,10 @@
+import { Text } from '@/app/components/StyledText';
 import { uangUtils } from '@/utils/preferences';
 import { WarnaTema } from '@/utils/themes';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Category, MataUang, Transaction } from '../../types/types';
 import { getCategoryById, TranslateKategori } from '../../utils/categories';
 

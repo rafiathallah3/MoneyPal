@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
 import { useTransactions } from '@/hooks/useTransactions';
@@ -7,7 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import LineChart from 'react-native-simple-line-chart';
 import { Transaction } from '../../types/types';

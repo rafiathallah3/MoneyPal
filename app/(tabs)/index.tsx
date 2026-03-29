@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useBudget } from '@/hooks/useBudget';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
@@ -10,17 +11,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Alert,
-    Platform,
-    Animated as RNAnimated,
-    SafeAreaView,
-    SectionList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Alert, Platform, Animated as RNAnimated, SafeAreaView, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Transaction } from '../../types/types';
@@ -105,6 +97,7 @@ function SummaryModeButton({ mode, theme, isActive, onPress }: { mode: string, t
 export default function MoneyPal() {
     const { kategori, dapat: dapatKategori } = useKategori();
     const { t, i18n } = useTranslation();
+    const navigation = useNavigation<any>();
     const { mataUang, dapat: dapatMataUang } = useMataUang();
     const { budgetData, dapat: dapatBudget } = useBudget();
     const { transactions: allTransactions, dapat: dapatTransaksi, tambah, update, hapus } = useTransactions();
@@ -419,7 +412,12 @@ export default function MoneyPal() {
                                 <Animated.View style={[styles.topBar, { backgroundColor: theme.bar }]} />
                             </View>
                         </GestureDetector>
-                        <Text style={styles.listTitle}>{t('transactions')}</Text>
+                        <View style={styles.listHeaderContainer}>
+                            <Text style={styles.listTitle}>{t('transactions')}</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('allTransactions')}>
+                                <Text style={styles.viewAllText}>{t('view_all')}</Text>
+                            </TouchableOpacity>
+                        </View>
                         {loading ? (
                             <FancyLoader />
                         ) : summaryMode === 'Day' ? (
@@ -552,12 +550,22 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         marginTop: 2,
     },
+    listHeaderContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginHorizontal: 20,
+        marginBottom: 10,
+    },
+    viewAllText: {
+        fontSize: 14,
+        color: '#007bff',
+        fontWeight: '500',
+    },
     listTitle: {
         fontSize: 18,
         fontWeight: '600',
         color: '#007bff',
-        marginHorizontal: 20,
-        marginBottom: 10,
     },
     listContent: {
         paddingBottom: 100, // Space for floating button

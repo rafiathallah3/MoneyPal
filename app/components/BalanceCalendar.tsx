@@ -1,6 +1,7 @@
+import { Text } from '@/app/components/StyledText';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { MataUang, Transaction } from '../../types/types';
 
 

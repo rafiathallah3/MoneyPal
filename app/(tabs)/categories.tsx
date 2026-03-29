@@ -1,10 +1,11 @@
+import { Text, TextInput } from '@/app/components/StyledText';
 import { useKategori } from '@/hooks/useCategory';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Modal, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Category } from '../../types/types';
 import { expenseCategories, incomeCategories, TranslateKategori } from '../../utils/categories';
 import HeaderAplikasi from '../components/HeaderAplikasi';

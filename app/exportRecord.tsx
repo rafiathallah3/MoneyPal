@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
 import { useTransactions } from '@/hooks/useTransactions';
@@ -7,14 +8,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import { Category, Transaction } from '../types/types';
 import { dateUtils } from '../utils/dateUtils';
 import { uangUtils } from '../utils/preferences';
 import HeaderAplikasi from './components/HeaderAplikasi';
-
+import { StatusBar } from 'expo-status-bar';
 const directories = [
     { name: 'Documents', path: RNFS.DocumentDirectoryPath },
     { name: 'Downloads', path: RNFS.DownloadDirectoryPath },
@@ -232,6 +233,7 @@ export default function ExportRecord() {
         <LinearGradient colors={["#f8f9fa", "#e3f2fd", "#f8f9fa"]} style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.container}>
+                    <StatusBar style="dark" />
                     {/* Header with Back Button */}
                     <HeaderAplikasi subtitle={t('export.export_records')} pageUtama={false} icon='download-outline' />
 

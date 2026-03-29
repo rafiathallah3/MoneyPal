@@ -1,9 +1,10 @@
+import { Text } from '@/app/components/StyledText';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface HeaderAplikasiProps {
     subtitle: string,
@@ -50,7 +51,7 @@ const HeaderSidePage = ({ subtitle, topPadding, icon, onBack }: { subtitle: stri
                 <Ionicons name="arrow-back" size={24} color="#007bff" />
             </TouchableOpacity>
             <View style={styles.headerContent}>
-                <Ionicons name={icon as "link"} size={28} style={styles.headerIcon} />
+                {icon ? <Ionicons name={icon as any} size={28} style={styles.headerIcon} /> : null}
                 <Text style={styles.headerTitle}>{subtitle}</Text>
             </View>
         </View>

@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useBudget } from '@/hooks/useBudget';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang, useNotifikasi } from '@/hooks/usePreference';
@@ -6,11 +7,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import HeaderAplikasi from './components/HeaderAplikasi';
-
+import { StatusBar } from 'expo-status-bar';
 async function getImageBase64(uri: string): Promise<string | null> {
     try {
         if (!uri) return null;
@@ -97,6 +98,7 @@ export default function Backup() {
     return (
         <LinearGradient colors={["#f8f9fa", "#e3f2fd", "#f8f9fa"]} style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
+                <StatusBar style="dark" />
                 {/* Header with Back Button */}
                 <HeaderAplikasi subtitle={t('backup.backup_data')} pageUtama={false} icon='cloud-upload-outline' />
 

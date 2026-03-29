@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { useBudget } from '@/hooks/useBudget';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
@@ -9,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, Pressable, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Calculator from '../components/Calculator';
 import FancyLoader from '../components/FancyLoader';
 import HeaderAplikasi from '../components/HeaderAplikasi';

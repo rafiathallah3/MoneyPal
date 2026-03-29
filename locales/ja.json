@@ -259,5 +259,7 @@
 	"balance_calendar": {
 		"positive_balance": "正の残高",
 		"negative_balance": "負の残高"
-	}
+	},
+	"view_all": "すべて表示",
+	"all_transactions": "すべての取引"
 }

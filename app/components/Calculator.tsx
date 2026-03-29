@@ -1,14 +1,7 @@
+import { Text } from '@/app/components/StyledText';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Animated,
-    Dimensions,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { Animated, Dimensions, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface CalculatorProps {
     visible: boolean;

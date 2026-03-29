@@ -1,21 +1,11 @@
+import { Text, TextInput } from '@/app/components/StyledText';
 import { useTransactions } from '@/hooks/useTransactions';
 import { uangUtils } from '@/utils/preferences';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Alert,
-    Image,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { Alert, Image, Modal, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Category, MataUang, TipeBudget, Transaction, TransactionFormData } from '../../types/types';
 import { getCategoryById, TranslateKategori } from '../../utils/categories';
 import { dateUtils } from '../../utils/dateUtils';

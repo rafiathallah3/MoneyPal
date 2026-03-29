@@ -1,7 +1,8 @@
+import { Text } from '@/app/components/StyledText';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export default function LockScreen({ onUnlock, pinAsli }: { onUnlock: () => void, pinAsli: string }) {
     const [pin, setPin] = useState<string>('');

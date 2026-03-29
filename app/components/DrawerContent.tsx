@@ -1,9 +1,10 @@
+import { Text } from '@/app/components/StyledText';
 import { lightTheme as theme } from '@/utils/themes';
 import { Ionicons } from '@expo/vector-icons';
 import { Router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, InteractionManager, Linking, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, InteractionManager, Linking, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 interface DrawerContentProps {

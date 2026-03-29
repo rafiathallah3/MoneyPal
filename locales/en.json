@@ -259,5 +259,7 @@
 	"balance_calendar": {
 		"positive_balance": "Positive Balance",
 		"negative_balance": "Negative Balance"
-	}
+	},
+	"view_all": "View all",
+	"all_transactions": "All Transactions"
 }

@@ -1,3 +1,4 @@
+import { Text } from '@/app/components/StyledText';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -5,18 +6,7 @@ import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Dimensions,
-    FlatList,
-    LayoutAnimation,
-    Platform,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    UIManager,
-    View,
-} from 'react-native';
+import { Dimensions, FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, TouchableOpacity, UIManager, View } from 'react-native';
 
 import { useMataUang, useNotifikasi } from '@/hooks/usePreference';
 import { requestNotificationPermission, scheduleDailyReminder } from '@/utils/notifikasi';

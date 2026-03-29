@@ -1,18 +1,11 @@
+import { Text } from '@/app/components/StyledText';
 import { useKategori } from '@/hooks/useCategory';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { i18n } from 'i18next';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-    Animated,
-    FlatList,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { Animated, FlatList, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Category } from '../../types/types';
 import { getCategoriesByType, TranslateKategori } from '../../utils/categories';
 

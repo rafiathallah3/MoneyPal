@@ -259,5 +259,7 @@
 	"balance_calendar": {
 		"positive_balance": "Saldo Positif",
 		"negative_balance": "Saldo Negatif"
-	}
+	},
+	"view_all": "Lihat semua",
+	"all_transactions": "Semua Transaksi"
 }

@@ -259,5 +259,7 @@
     "balance_calendar": {
         "positive_balance": "盈利",
         "negative_balance": "亏损"
-    }
+    },
+    "view_all": "查看全部",
+    "all_transactions": "所有交易"
 }

@@ -259,5 +259,7 @@
     "balance_calendar": {
         "positive_balance": "Balansu Pozitivu",
         "negative_balance": "Balansu Negativu"
-    }
+    },
+    "view_all": "Haree Hotu",
+    "all_transactions": "Tranzasaun Hotu"
 }

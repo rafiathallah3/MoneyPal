@@ -259,5 +259,7 @@
     "balance_calendar": {
         "positive_balance": "လက်ကျန်ငွေ အပေါင်း",
         "negative_balance": "လက်ကျန်ငွေ အနှုတ်"
-    }
+    },
+    "view_all": "အားလုံးကိုကြည့်ရှုပါ။",
+    "all_transactions": "အရောင်းအဝယ်အားလုံး"
 }
