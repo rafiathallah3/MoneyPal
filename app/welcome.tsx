@@ -6,7 +6,7 @@ import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, TouchableOpacity, UIManager, View } from 'react-native';
+import { Dimensions, FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, UIManager, View } from 'react-native';
 
 import { useMataUang, useNotifikasi } from '@/hooks/usePreference';
 import { requestNotificationPermission, scheduleDailyReminder } from '@/utils/notifikasi';
@@ -44,6 +44,7 @@ export default function Welcome({ onDismiss }: { onDismiss?: () => void }) {
     const [selectedCurrency, setSelectedCurrency] = useState(CURRENCIES[0]);
     const [pin, setPin] = useState('');
     const [confirmPin, setConfirmPin] = useState('');
+    const [hint, setHint] = useState('');
     const [isConfirmingPin, setIsConfirmingPin] = useState(false);
     const [pinError, setPinError] = useState('');
     const [showRestore, setShowRestore] = useState(false);
@@ -128,6 +129,9 @@ export default function Welcome({ onDismiss }: { onDismiss?: () => void }) {
         await gantiMataUang(selectedCurrency.symbol);
         if (finalPin) {
             await storageUtils.simpanPin(finalPin);
+            if (hint.trim().length > 0) {
+                await storageUtils.simpanHint(hint.trim());
+            }
         }
         await storageUtils.setHasLaunched();
 
@@ -319,6 +323,19 @@ export default function Welcome({ onDismiss }: { onDismiss?: () => void }) {
             </View>
 
             {pinError !== '' && <Text style={styles.errorText}>{pinError}</Text>}
+
+            {!isConfirmingPin && (
+                <View style={styles.hintContainer}>
+                    <Text style={styles.hintLabel}>{t('welcome.pin_hint') || "PIN Hint (Optional)"}</Text>
+                    <TextInput
+                        style={styles.hintInput}
+                        placeholder={t('welcome.pin_hint_placeholder') || "e.g., Year of birth"}
+                        value={hint}
+                        onChangeText={setHint}
+                        maxLength={30}
+                    />
+                </View>
+            )}
 
             <View style={styles.keypad}>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'delete'].map((item, index) => (
@@ -637,5 +654,26 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#0984e3',
         marginLeft: 10,
+    },
+    hintContainer: {
+        width: '80%',
+        marginBottom: 20,
+        alignItems: 'center'
+    },
+    hintLabel: {
+        fontSize: 14,
+        color: '#636e72',
+        marginBottom: 8
+    },
+    hintInput: {
+        width: '100%',
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#dfe6e9',
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        color: '#2d3436',
+        textAlign: 'center'
     },
 });

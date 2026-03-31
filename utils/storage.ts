@@ -10,6 +10,7 @@ const BUDGET_KEY = 'moneypal_budget';
 const NOTIFIKASI_KEY = "moneypal_daily_reminder";
 const WAKTU_NOTIFIKASI_KEY = "moneypal_daily_reminder_time";
 const PIN_KEY = "moneypal_pin";
+const HINT_KEY = "moneypal_pin_hint";
 const LANG_KEY = 'moneypal_language';
 const HAS_LAUNCHED_KEY = 'moneypal_has_launched';
 
@@ -257,6 +258,24 @@ export const storageUtils = {
       await AsyncStorage.setItem(PIN_KEY, pin);
     } catch (error) {
       console.error('Error simpan pin:', error);
+    }
+  },
+
+  async dapatinHint(): Promise<string> {
+    try {
+      const hint = await AsyncStorage.getItem(HINT_KEY);
+      return hint || "";
+    } catch (error) {
+      console.error('Error dapatin pin hint:', error);
+      return "";
+    }
+  },
+
+  async simpanHint(hint: string): Promise<void> {
+    try {
+      await AsyncStorage.setItem(HINT_KEY, hint);
+    } catch (error) {
+      console.error('Error simpan pin hint:', error);
     }
   },
 

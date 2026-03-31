@@ -6,6 +6,8 @@
 		"create_pin_desc": "Amankan data kamu dengan PIN 4 digit.",
 		"confirm_pin": "Konfirmasi PIN",
 		"confirm_pin_desc": "Masukkan ulang PIN kamu untuk memastikan.",
+		"pin_hint": "Petunjuk PIN (Opsional)",
+		"pin_hint_placeholder": "mis., Tahun lahir",
 		"pin_mismatch": "PIN tidak sama",
 		"pin_created": "PIN berhasil dibuat!",
 		"skip_pin": "Lewati Pengaturan PIN",
@@ -212,7 +214,8 @@
 	"lockscreen": {
 		"enter_pin": "Masukkan PIN",
 		"enter_pin_desc": "Silakan masukkan 4 digit PIN Anda",
-		"incorrect_pin": "PIN salah. Coba lagi."
+		"incorrect_pin": "PIN salah. Coba lagi.",
+		"hint": "Petunjuk: {{hint}}"
 	},
 	"drawer": {
 		"smart_expense_tracker": "Pelacak Pengeluaran Cerdas",

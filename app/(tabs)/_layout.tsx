@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable } from 'react-native';
 
 const Layout = () => {
     const insets = useSafeAreaInsets();
@@ -17,6 +18,7 @@ const Layout = () => {
                 tabBarActiveTintColor: '#007bff',
                 tabBarInactiveTintColor: '#6c757d',
                 tabBarStyle: { paddingBottom: insets.bottom, height: 60 + insets.bottom, backgroundColor: theme.linearGradientBackground[0] },
+                tabBarButton: ({ ref, ...props }: any) => <Pressable {...props} android_ripple={{ color: 'transparent' }} />,
                 tabBarIcon: ({ color, size }) => {
                     if (route.name === 'index') {
                         return <Ionicons name="home" size={size} color={color} />;

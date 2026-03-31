@@ -6,6 +6,8 @@
 		"create_pin_desc": "Secure your data with a 4-digit PIN.",
 		"confirm_pin": "Confirm PIN",
 		"confirm_pin_desc": "Re-enter your PIN to confirm.",
+		"pin_hint": "PIN Hint (Optional)",
+		"pin_hint_placeholder": "e.g., Year of birth",
 		"pin_mismatch": "PINs do not match",
 		"pin_created": "PIN created successfully!",
 		"skip_pin": "Skip PIN Setup",
@@ -212,7 +214,8 @@
 	"lockscreen": {
 		"enter_pin": "Enter PIN",
 		"enter_pin_desc": "Please enter your 4-digit PIN",
-		"incorrect_pin": "Incorrect PIN. Try again."
+		"incorrect_pin": "Incorrect PIN. Try again.",
+		"hint": "Hint: {{hint}}"
 	},
 	"drawer": {
 		"smart_expense_tracker": "Smart Expense Tracker",

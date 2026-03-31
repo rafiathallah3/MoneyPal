@@ -1,4 +1,5 @@
 import { Text } from '@/app/components/StyledText';
+import { storageUtils } from '@/utils/storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +8,17 @@ import { Animated, Dimensions, Image, StyleSheet, TouchableOpacity, View } from 
 export default function LockScreen({ onUnlock, pinAsli }: { onUnlock: () => void, pinAsli: string }) {
     const [pin, setPin] = useState<string>('');
     const [error, setError] = useState(false);
+    const [failedAttempts, setFailedAttempts] = useState(0);
+    const [hint, setHint] = useState<string>('');
     const fadeAnim = new Animated.Value(1);
+
+    useEffect(() => {
+        const fetchHint = async () => {
+            const h = await storageUtils.dapatinHint();
+            if (h) setHint(h);
+        };
+        fetchHint();
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -30,9 +41,7 @@ export default function LockScreen({ onUnlock, pinAsli }: { onUnlock: () => void
         if (pin.length >= 4 && error) {
             setPin(number);
             setError(false);
-        }
-
-        if (pin.length < 4) {
+        } else if (pin.length < 4) {
             const newPin = pin + number;
             setError(false);
             setPin(newPin);
@@ -40,8 +49,10 @@ export default function LockScreen({ onUnlock, pinAsli }: { onUnlock: () => void
             if (newPin.length === 4) {
                 if (newPin === pinAsli) {
                     onUnlock();
+                    setFailedAttempts(0);
                 } else {
                     setError(true);
+                    setFailedAttempts(prev => prev + 1);
                     setPin('');
                 }
             }
@@ -91,29 +102,33 @@ export default function LockScreen({ onUnlock, pinAsli }: { onUnlock: () => void
                 </Animated.View>
 
                 <View style={styles.errorContainer}>
-                    {error && (
-                        <Text style={styles.errorText}>{t('lockscreen.incorrect_pin')}</Text>
-                    )}
+                    <Text style={[styles.errorText, { opacity: error ? 1 : 0 }]}>
+                        {t('lockscreen.incorrect_pin')}
+                    </Text>
+                    <Text style={[styles.hintText, { opacity: (failedAttempts >= 3 && hint !== '') ? 1 : 0 }]}>
+                        {failedAttempts >= 3 && hint !== '' ? t('lockscreen.hint', { hint }) : ' '}
+                    </Text>
                 </View>
 
                 <View style={styles.keypad}>
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, '←'].map((number, index) => (
-                        number !== '' && (
-                            <TouchableOpacity
-                                key={index}
-                                style={[styles.key, number === '←' && styles.deleteKey]}
-                                onPress={() => number === '←' ? handleDelete() : handleNumberPress(number.toString())}
-                            >
-                                <LinearGradient
-                                    colors={['rgba(255,255,255,0.15)', 'rgba(255,255,255,0.05)']}
-                                    style={styles.keyGradient}
+                        <View key={index} style={[styles.key, number === '←' && styles.deleteKey]}>
+                            {number !== '' && (
+                                <TouchableOpacity
+                                    style={{ flex: 1 }}
+                                    onPress={() => number === '←' ? handleDelete() : handleNumberPress(number.toString())}
                                 >
-                                    <Text style={[styles.keyText, number === '←' && styles.deleteText]}>
-                                        {number}
-                                    </Text>
-                                </LinearGradient>
-                            </TouchableOpacity>
-                        )
+                                    <LinearGradient
+                                        colors={['rgba(255,255,255,0.15)', 'rgba(255,255,255,0.05)']}
+                                        style={styles.keyGradient}
+                                    >
+                                        <Text style={[styles.keyText, number === '←' && styles.deleteText]}>
+                                            {number}
+                                        </Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     ))}
                 </View>
             </View>
@@ -134,7 +149,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         width: 120,
         height: 120,
-        marginBottom: 40,
+        marginBottom: 20,
         borderRadius: 30,
         backgroundColor: 'rgba(255,255,255,0.1)',
         padding: 15,
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 16,
         color: 'rgba(255,255,255,0.7)',
-        marginBottom: 50,
+        marginBottom: 20,
     },
     pinContainer: {
         flexDirection: 'row',
@@ -186,17 +201,18 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     errorContainer: {
-        height: 30,
+        height: 60,
         marginBottom: 10,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center'
     },
     keypad: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',
-        width: Dimensions.get('window').width * 0.8,
-        maxWidth: 400,
+        width: Dimensions.get('window').width * 0.7,
+        maxWidth: 320,
+        alignSelf: 'center',
     },
     key: {
         width: '30%',
@@ -220,5 +236,11 @@ const styles = StyleSheet.create({
     },
     deleteText: {
         fontSize: 24,
+    },
+    hintText: {
+        color: 'white',
+        fontSize: 16,
+        marginTop: 5,
+        fontWeight: '500',
     },
 });

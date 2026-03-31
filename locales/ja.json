@@ -20,7 +20,9 @@
 		"enable_notifications": "通知を有効にする",
 		"all_set": "準備完了！",
 		"all_set_desc": "これで準備OK！MoneyPalで支出管理を始めましょう。",
-		"step": "ステップ {{step}} / {{total}}"
+		"step": "ステップ {{step}} / {{total}}",
+		"pin_hint": "PINのヒント (省略可)",
+		"pin_hint_placeholder": "例: 生まれた年"
 	},
 	"preferences": {
 		"title": "環境設定",
@@ -212,7 +214,8 @@
 	"lockscreen": {
 		"enter_pin": "PINを入力",
 		"enter_pin_desc": "4桁のPINを入力してください",
-		"incorrect_pin": "PINが正しくありません。もう一度お試しください。"
+		"incorrect_pin": "PINが間違っています。もう一度お試しください。",
+		"hint": "ヒント: {{hint}}"
 	},
 	"drawer": {
 		"smart_expense_tracker": "スマート経費トラッカー",

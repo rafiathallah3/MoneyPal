@@ -414,8 +414,9 @@ export default function MoneyPal() {
                         </GestureDetector>
                         <View style={styles.listHeaderContainer}>
                             <Text style={styles.listTitle}>{t('transactions')}</Text>
-                            <TouchableOpacity onPress={() => navigation.navigate('allTransactions')}>
+                            <TouchableOpacity onPress={() => navigation.navigate('allTransactions')} style={{ flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={styles.viewAllText}>{t('view_all')}</Text>
+                                <Ionicons name="chevron-forward" size={16} color="#007bff" />
                             </TouchableOpacity>
                         </View>
                         {loading ? (

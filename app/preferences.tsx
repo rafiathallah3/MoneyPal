@@ -11,12 +11,12 @@ import * as Localization from 'expo-localization';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
+import { FlatList, Modal, Pressable, ScrollView, StyleSheet, Switch, TextInput, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import i18n from '../utils/i18n';
 import HeaderAplikasi from './components/HeaderAplikasi';
 const APP_NAME = 'MoneyPal';
-const APP_VERSION = 'v1.1.0';
+const APP_VERSION = 'v1.1.1';
 
 const bahasaTeknologi = Localization.getLocales()[0]?.languageCode || 'en';
 
@@ -39,6 +39,7 @@ export default function Preferences() {
     const [pinModalMode, setPinModalMode] = useState<'setup' | 'verify'>('setup');
     const [currentPin, setCurrentPin] = useState('');
     const [pinError, setPinError] = useState('');
+    const [hint, setHint] = useState('');
     const [languageModalVisible, setLanguageModalVisible] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState(bahasaTeknologi); // default English
     // const [themeModalVisible, setThemeModalVisible] = useState(false);
@@ -230,6 +231,7 @@ export default function Preferences() {
                                         setPinModalVisible(true);
                                         setCurrentPin('');
                                         setPinError('');
+                                        setHint('');
                                     } else {
                                         // Disable lock screen - show PIN verification modal
                                         if (pin !== "") {
@@ -379,6 +381,20 @@ export default function Preferences() {
                                     <Text style={styles.pinErrorText}>{pinError}</Text>
                                 )}
 
+                                {pinModalMode === 'setup' && (
+                                    <View style={styles.hintContainer}>
+                                        <Text style={[styles.hintLabel, { color: theme.textSecondary }]}>{t('welcome.pin_hint') || "PIN Hint (Optional)"}</Text>
+                                        <TextInput
+                                            style={[styles.hintInput, { backgroundColor: theme.bar, color: theme.text, borderColor: theme.divider }]}
+                                            placeholder={t('welcome.pin_hint_placeholder') || "e.g., Year of birth"}
+                                            placeholderTextColor={theme.textSecondary}
+                                            value={hint}
+                                            onChangeText={setHint}
+                                            maxLength={30}
+                                        />
+                                    </View>
+                                )}
+
                                 <View style={styles.pinKeypad}>
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'clear', 0, 'delete'].map((key, index) => (
                                         <TouchableOpacity
@@ -407,6 +423,9 @@ export default function Preferences() {
                                                                 if (pinModalMode === 'setup') {
                                                                     // Save the new PIN
                                                                     await storageUtils.simpanPin(updatedPin);
+                                                                    if (hint.trim().length > 0) {
+                                                                        await storageUtils.simpanHint(hint.trim());
+                                                                    }
                                                                     setPinModalVisible(false);
                                                                     setLockScreenEnabled(true);
                                                                 } else {
@@ -838,5 +857,22 @@ const styles = StyleSheet.create({
     pinKeyText: {
         fontSize: 24,
         fontWeight: '500',
+    },
+    hintContainer: {
+        width: '80%',
+        marginBottom: 20,
+        alignItems: 'center'
+    },
+    hintLabel: {
+        fontSize: 14,
+        marginBottom: 8
+    },
+    hintInput: {
+        width: '100%',
+        borderWidth: 1,
+        borderRadius: 8,
+        padding: 12,
+        fontSize: 16,
+        textAlign: 'center'
     },
 });

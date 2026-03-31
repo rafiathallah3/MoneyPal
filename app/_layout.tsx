@@ -1,4 +1,4 @@
-import { Text, TextInput } from '@/app/components/StyledText';
+import { TextInput } from '@/app/components/StyledText';
 import { useTransactions } from '@/hooks/useTransactions';
 import { storageUtils } from '@/utils/storage';
 import { createDrawerNavigator } from '@react-navigation/drawer';
