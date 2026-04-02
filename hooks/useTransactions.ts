@@ -26,6 +26,7 @@ export const useTransactions = create<TransactionState>((set, get) => ({
         set({ transactions: data })
     },
     hapus: async (id) => {
+        set((state) => ({ transactions: state.transactions.filter(t => t.id !== id) }));
         const data = await storageUtils.deleteTransaction(id);
         set({ transactions: data });
     },

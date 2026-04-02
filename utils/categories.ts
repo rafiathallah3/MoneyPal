@@ -140,6 +140,26 @@ export const TranslateKategori: { [bahasa: string]: { [id: string]: string } } =
     "gift": "Hadiah",
     "refund": "Pengembalian",
     "other_income": "Lainnya",
+  },
+  "sn": {
+    "food": "Tuangeun",
+    "transport": "Angkutan",
+    "shopping": "Balanja",
+    "entertainment": "Hiburan",
+    "health": "Kasehatan & Medis",
+    "education": "Atikan",
+    "bills": "Tagihan",
+    "clothes": "Papakéan",
+    "laundry": "Seuseuhan",
+    "home": "Bumi & Taman",
+    "personal": "Kaperluan Pribadi",
+    "other_expense": "Lianna",
+    "salary": "Gajih",
+    "freelance": "Padamelan Bebas",
+    "investment": "Investasi",
+    "gift": "Kado",
+    "refund": "Duit Balik",
+    "other_income": "Lianna",
   }
 }
 

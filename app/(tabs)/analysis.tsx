@@ -8,7 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, Dimensions, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, InteractionManager } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import LineChart from 'react-native-simple-line-chart';
 import { Transaction } from '../../types/types';
@@ -106,9 +106,12 @@ export default function AnalysisScreen() {
 
 	useEffect(() => {
 		if (isFocused) {
-			preparePieData(transactions);
-			prepareLineData(transactions);
-			if (loading) setLoading(false);
+			const task = InteractionManager.runAfterInteractions(() => {
+				preparePieData(transactions);
+				prepareLineData(transactions);
+				if (loading) setLoading(false);
+			});
+			return () => task.cancel();
 		}
 	}, [transactions, summaryMode, selectedDate, transactionType, isFocused]);
 

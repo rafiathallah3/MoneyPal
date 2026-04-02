@@ -272,7 +272,7 @@ export default function CategoriesScreen() {
             <View style={[styles.categoryIcon, { backgroundColor: item.color }]}>
                 <Text style={styles.categoryIconText}>{item.icon}</Text>
             </View>
-            <Text style={styles.categoryName}>{TranslateKategori[i18n.language][item.id] ? TranslateKategori[i18n.language][item.id] : item.name}</Text>
+            <Text style={styles.categoryName}>{TranslateKategori[i18n.language]?.[item.id] ? TranslateKategori[i18n.language][item.id] : item.name}</Text>
             {/* Show type badge for custom categories */}
             {editable && (
                 <View style={[

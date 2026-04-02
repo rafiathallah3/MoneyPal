@@ -9,6 +9,7 @@ import jv from '../locales/jv.json';
 import mm from '../locales/mm.json';
 import tl from '../locales/tl.json';
 import zh from '../locales/zh.json';
+import sn from '../locales/sn.json';
 
 import { storageUtils } from './storage';
 
@@ -20,6 +21,7 @@ const resources = {
   zh: { translation: zh },
   tl: { translation: tl },
   mm: { translation: mm },
+  sn: { translation: sn },
 };
 
 let deviceLanguage = Localization.getLocales()[0]?.languageCode || 'en';

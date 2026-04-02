@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { i18n } from 'i18next';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, FlatList, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Animated, FlatList, Modal, Pressable, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Category } from '../../types/types';
 import { getCategoriesByType, TranslateKategori } from '../../utils/categories';
 
@@ -44,11 +44,10 @@ function CategoryCard({ item, isSelected, i18n, onPress }: { item: Category, isS
     const { scale, handlePressIn, handlePressOut } = useCategoryCardAnimation();
     return (
         <Animated.View style={{ transform: [{ scale }], flex: 1 }}>
-            <TouchableOpacity
-                activeOpacity={0.85}
+            <Pressable
+                android_ripple={{ color: 'transparent' }}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
-                // style={{ flex: 1 }}
                 onPress={onPress}
             >
                 <LinearGradient
@@ -80,7 +79,7 @@ function CategoryCard({ item, isSelected, i18n, onPress }: { item: Category, isS
                         {TranslateKategori[i18n.language][item.id] ? TranslateKategori[i18n.language][item.id] : item.name}
                     </Text>
                 </LinearGradient>
-            </TouchableOpacity>
+            </Pressable>
         </Animated.View>
     );
 }

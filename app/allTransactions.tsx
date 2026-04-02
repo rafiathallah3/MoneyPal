@@ -1,3 +1,4 @@
+import { useBudget } from '@/hooks/useBudget';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
 import { useTransactions } from '@/hooks/useTransactions';
@@ -7,9 +8,10 @@ import { lightTheme as theme } from '@/utils/themes';
 import { FlashList } from '@shopify/flash-list';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, SafeAreaView, StyleSheet, View } from 'react-native';
+import AddTransactionModal from './components/AddTransactionModal';
 import HeaderAplikasi from './components/HeaderAplikasi';
 import { Text } from './components/StyledText';
 import TransactionItem from './components/TransactionItem';
@@ -23,11 +25,15 @@ export default function AllTransactions() {
     const { transactions: allTransactions, dapat, hapus, update } = useTransactions();
     const { kategori, dapat: dapatKategori } = useKategori();
     const { mataUang, dapat: dapatMataUang } = useMataUang();
+    const { budgetData, dapat: dapatBudget } = useBudget();
+    const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         dapat();
         dapatKategori();
         dapatMataUang();
+        dapatBudget();
     }, []);
 
     // Flatten grouped transactions into a single array for FlashList
@@ -80,6 +86,17 @@ export default function AllTransactions() {
         );
     }, [hapus, t]);
 
+    const handleEditTransaction = useCallback((transaction: Transaction) => {
+        setEditingTransaction(transaction);
+        setModalVisible(true);
+    }, []);
+
+    const handleUpdateTransaction = async (transaction: Transaction) => {
+        update(transaction);
+        setModalVisible(false);
+        setEditingTransaction(null);
+    };
+
     const renderItem = useCallback(({ item }: { item: ListItem }) => {
         if (item.type === 'header') {
             return (
@@ -94,11 +111,11 @@ export default function AllTransactions() {
                 theme={theme}
                 mataUang={mataUang}
                 onDelete={handleDeleteTransaction}
-                onEdit={update}
+                onEdit={handleEditTransaction}
                 customKategori={kategori}
             />
         );
-    }, [mataUang, kategori, handleDeleteTransaction, update]);
+    }, [mataUang, kategori, handleDeleteTransaction, handleEditTransaction]);
 
     const keyExtractor = useCallback((item: ListItem) => {
         if (item.type === 'header') return item.id;
@@ -135,6 +152,20 @@ export default function AllTransactions() {
                     contentContainerStyle={styles.listContent}
                     ListEmptyComponent={renderEmptyList}
                     stickyHeaderIndices={stickyHeaderIndices}
+                />
+                <AddTransactionModal
+                    visible={modalVisible}
+                    onClose={() => {
+                        setEditingTransaction(null);
+                        setModalVisible(false);
+                    }}
+                    onSave={() => {}}
+                    selectedDate={new Date()}
+                    transaction={editingTransaction || undefined}
+                    mataUang={mataUang}
+                    kategori={kategori}
+                    budgetData={budgetData || { budget: {}, default: { all: 0 } }}
+                    onUpdate={handleUpdateTransaction}
                 />
             </SafeAreaView>
         </LinearGradient>

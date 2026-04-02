@@ -50,6 +50,8 @@ export default function AddTransactionModal({
     const [showCategoryPicker, setShowCategoryPicker] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uneditedAmount, setUneditedAmount] = useState<number>(0);
+    const [draftFormData, setDraftFormData] = useState<TransactionFormData | null>(null);
+    const [draftImage, setDraftImage] = useState<string | null>(null);
     const { t, i18n } = useTranslation();
 
     React.useEffect(() => {
@@ -67,16 +69,22 @@ export default function AddTransactionModal({
             setSelectedImage(transaction.imageUri || null);
             setUneditedAmount(transaction.amount);
         } else {
-            setFormData({
-                title: '',
-                amount: '',
-                type: 'expense',
-                date: dateUtils.formatDate(selectedDate),
-                description: '',
-                category: '',
-            });
-            setSelectedImage(null);
-            setUneditedAmount(0);
+            if (draftFormData) {
+                setFormData(draftFormData);
+                setSelectedImage(draftImage);
+                setUneditedAmount(0);
+            } else {
+                setFormData({
+                    title: '',
+                    amount: '',
+                    type: 'expense',
+                    date: dateUtils.formatDate(selectedDate),
+                    description: '',
+                    category: '',
+                });
+                setSelectedImage(null);
+                setUneditedAmount(0);
+            }
         }
     }, [visible, transaction, selectedDate]);
 
@@ -182,6 +190,8 @@ export default function AddTransactionModal({
             onUpdate(newTransaction);
         } else {
             onSave(newTransaction);
+            setDraftFormData(null);
+            setDraftImage(null);
         }
         resetForm();
     };
@@ -199,6 +209,20 @@ export default function AddTransactionModal({
     };
 
     const handleClose = () => {
+        if (!isEditMode) {
+            const hasDraftContent = formData.title.trim() !== '' || 
+                                    formData.amount.trim() !== '' || 
+                                    formData.description.trim() !== '' || 
+                                    formData.category !== '' || 
+                                    selectedImage !== null;
+            if (hasDraftContent) {
+                setDraftFormData(formData);
+                setDraftImage(selectedImage);
+            } else {
+                setDraftFormData(null);
+                setDraftImage(null);
+            }
+        }
         resetForm();
         onClose();
     };
@@ -538,6 +562,7 @@ const styles = StyleSheet.create({
     categoryPlaceholder: {
         fontSize: 16,
         color: '#6c757d',
+        textAlign: "center",
     },
     addImageButton: {
         backgroundColor: '#ffffff',

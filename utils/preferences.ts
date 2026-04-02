@@ -18,6 +18,7 @@ export const LANGUAGES = [
     { code: 'tl', label: 'Timor-Leste', flag: '🇹🇱' },
     { code: 'mm', label: 'Myanmar', flag: '🇲🇲' },
     { code: 'jv', label: 'Basa Jawa', flag: '🇮🇩' },
+    { code: 'sn', label: 'Basa Sunda', flag: '🇮🇩' },
 ];
 
 export const uangUtils = {

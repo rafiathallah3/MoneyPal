@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Localization from 'expo-localization';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, FlatList, LayoutAnimation, Platform, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, UIManager, View } from 'react-native';
 
@@ -52,6 +52,15 @@ export default function Welcome({ onDismiss }: { onDismiss?: () => void }) {
 
     const [notificationTime, setNotificationTime] = useState<{ hour: number, minute: number }>({ hour: 20, minute: 0 });
     const [showTimePicker, setShowTimePicker] = useState(false);
+
+    useEffect(() => {
+        const loadBahasa = async () => {
+            await i18n.changeLanguage(selectedLanguage);
+            storageUtils.simpanBahasa(selectedLanguage);
+        }
+
+        loadBahasa();
+    }, []);
 
     const handleLanguageSelect = async (langCode: string) => {
         setSelectedLanguage(langCode);
