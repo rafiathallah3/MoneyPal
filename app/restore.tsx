@@ -169,8 +169,8 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
                                 {progress && (
                                     <Text style={[styles.summaryText, { marginTop: 8 }]}>
                                         {progress.type === 'images'
-                                            ? `Restoring images: ${progress.current}/${progress.total}`
-                                            : `Adding transaction: ${progress.current}/${progress.total}`}
+                                            ? t('restore.restoring_images', { current: progress.current, total: progress.total })
+                                            : t('restore.adding_transaction', { current: progress.current, total: progress.total })}
                                     </Text>
                                 )}
                             </View>

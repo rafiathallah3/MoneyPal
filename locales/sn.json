@@ -68,8 +68,10 @@
 		"total_budgets": "Total Anggaran",
 		"images": "Gambar",
 		"currency": "Mata Uang",
-		"restoring": "Nuju mulihkeun...",
-		"restore_now": "Pulihkeun Ayeuna"
+		"restoring": "Mulihkeun...",
+		"restore_now": "Mulihkeun Ayeuna",
+		"restoring_images": "Mulihkeun gambar: {{current}}/{{total}}",
+		"adding_transaction": "Nambahkeun transaksi: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "Euweuh Data",
@@ -123,8 +125,14 @@
 		"backup_now": "Cadangkeun Ayeuna"
 	},
 	"monthly_balance_calendar": "Kalender Saldo Bulanan",
-	"expense_analysis": "Analisis Pangaluaran",
-	"month": "Sasih",
+	"expense_analysis": "Analisis Pengeluaran",
+	"average_per_transaction": "Rata-rata per Transaksi",
+	"predicted_spends": "Prediksi Pengeluaran",
+	"total_expenses_daily": "Total Pengeluaran (Harian)",
+	"total_expenses_monthly": "Total Pengeluaran (Bulanan)",
+	"total_income_daily": "Total Pemasukan (Harian)",
+	"total_income_monthly": "Total Pemasukan (Bulanan)",
+	"month": "Bulan",
 	"year": "Taun",
 	"all_time": "Sapanjang Waktu",
 	"by_category": "Dumasar Kategori",

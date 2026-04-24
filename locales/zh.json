@@ -68,8 +68,10 @@
 		"total_budgets": "预算总数",
 		"images": "图像",
 		"currency": "货币",
-		"restoring": "恢复中...",
-		"restore_now": "立即恢复"
+		"restoring": "正在恢复...",
+		"restore_now": "立即恢复",
+		"restoring_images": "正在恢复图片: {{current}}/{{total}}",
+		"adding_transaction": "正在添加交易: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "无数据",
@@ -124,6 +126,12 @@
 	},
 	"monthly_balance_calendar": "月度收支日历",
 	"expense_analysis": "支出分析",
+	"average_per_transaction": "每笔交易平均值",
+	"predicted_spends": "支出预测",
+	"total_expenses_daily": "总支出 (日)",
+	"total_expenses_monthly": "总支出 (月)",
+	"total_income_daily": "总收入 (日)",
+	"total_income_monthly": "总收入 (月)",
 	"month": "月",
 	"year": "年",
 	"all_time": "全部时间",

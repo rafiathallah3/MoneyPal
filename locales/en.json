@@ -69,7 +69,9 @@
 		"images": "Images",
 		"currency": "Currency",
 		"restoring": "Restoring...",
-		"restore_now": "Restore Now"
+		"restore_now": "Restore Now",
+		"restoring_images": "Restoring images: {{current}}/{{total}}",
+		"adding_transaction": "Adding transaction: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "No Data",
@@ -124,6 +126,12 @@
 	},
 	"monthly_balance_calendar": "Monthly Balance Calendar",
 	"expense_analysis": "Expense Analysis",
+	"average_per_transaction": "Average per Transaction",
+	"predicted_spends": "Predicted Spends",
+	"total_expenses_daily": "Total Expenses (Daily)",
+	"total_expenses_monthly": "Total Expenses (Monthly)",
+	"total_income_daily": "Total Income (Daily)",
+	"total_income_monthly": "Total Income (Monthly)",
 	"month": "Month",
 	"year": "Year",
 	"all_time": "All Time",

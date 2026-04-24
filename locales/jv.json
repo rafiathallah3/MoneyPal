@@ -69,7 +69,9 @@
 		"images": "Gambar",
 		"currency": "Mata Uang",
 		"restoring": "Mbalekake...",
-		"restore_now": "Bhalekake Saiki"
+		"restore_now": "Balekake Saiki",
+		"restoring_images": "Mbalekake gambar: {{current}}/{{total}}",
+		"adding_transaction": "Nambahake transaksi: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "Ora Ana Data",
@@ -124,7 +126,13 @@
 	},
 	"monthly_balance_calendar": "Kalender Saldo Wulanan",
 	"expense_analysis": "Analisis Pengeluaran",
-	"month": "Wulan",
+	"average_per_transaction": "Rata-rata saben Transaksi",
+	"predicted_spends": "Prediksi Pengeluaran",
+	"total_expenses_daily": "Total Pengeluaran (Saben Dina)",
+	"total_expenses_monthly": "Total Pengeluaran (Saben Sasi)",
+	"total_income_daily": "Total Pemasukan (Saben Dina)",
+	"total_income_monthly": "Total Pemasukan (Saben Sasi)",
+	"month": "Sasi",
 	"year": "Taun",
 	"all_time": "Kabeh Wektu",
 	"by_category": "Miturut Kategori",

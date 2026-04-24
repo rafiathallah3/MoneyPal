@@ -69,7 +69,9 @@
 		"images": "画像",
 		"currency": "通貨",
 		"restoring": "復元中...",
-		"restore_now": "今すぐ復元"
+		"restore_now": "今すぐ復元",
+		"restoring_images": "画像を復元中: {{current}}/{{total}}",
+		"adding_transaction": "取引を追加中: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "データがありません",
@@ -123,7 +125,13 @@
 		"backup_now": "今すぐバックアップ"
 	},
 	"monthly_balance_calendar": "月間残高カレンダー",
-	"expense_analysis": "経費分析",
+	"expense_analysis": "支出分析",
+	"average_per_transaction": "取引ごとの平均值",
+	"predicted_spends": "支出予測",
+	"total_expenses_daily": "合計支出（日次）",
+	"total_expenses_monthly": "合計支出（月次）",
+	"total_income_daily": "合計収入（日次）",
+	"total_income_monthly": "合計収入（月次）",
 	"month": "月",
 	"year": "年",
 	"all_time": "全期間",

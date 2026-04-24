@@ -69,7 +69,9 @@
 		"images": "ဓာတ်ပုံများ",
 		"currency": "ငွေကြေး",
 		"restoring": "ပြန်လည်ရယူနေသည်...",
-		"restore_now": "ယခု ပြန်လည်ရယူမည်"
+		"restore_now": "ယခု ပြန်လည်ရယူရန်",
+		"restoring_images": "ပုံများကို ပြန်လည်ရယူနေသည်- {{current}}/{{total}}",
+		"adding_transaction": "အရောင်းအဝယ်များကို ထည့်သွင်းနေသည်- {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "ဒေတာ မရှိပါ",
@@ -123,7 +125,13 @@
 		"backup_now": "ယခု Backup လုပ်မည်"
 	},
 	"monthly_balance_calendar": "လစဉ် လက်ကျန်ငွေ ပြက္ခဒိန်",
-	"expense_analysis": "ကုန်ကျစရိတ် ဆန်းစစ်ချက်",
+	"expense_analysis": "အသုံးစရိတ် ခွဲခြမ်းစိတ်ဖြာမှု",
+	"average_per_transaction": "တစ်ကြိမ်စာ ပျမ်းမျှအသုံးပြုမှု",
+	"predicted_spends": "ခန့်မှန်းခြေ အသုံးစရိတ်",
+	"total_expenses_daily": "စုစုပေါင်း အသုံးစရိတ် (နေ့စဉ်)",
+	"total_expenses_monthly": "စုစုပေါင်း အသုံးစရိတ် (လစဉ်)",
+	"total_income_daily": "စုစုပေါင်း ဝင်ငွေ (နေ့စဉ်)",
+	"total_income_monthly": "စုစုပေါင်း ဝင်ငွေ (လစဉ်)",
 	"month": "လ",
 	"year": "နှစ်",
 	"all_time": "ကာလတစ်ခုလုံး",

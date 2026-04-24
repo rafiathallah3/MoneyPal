@@ -69,7 +69,9 @@
 		"images": "Gambar",
 		"currency": "Mata Uang",
 		"restoring": "Memulihkan...",
-		"restore_now": "Pulihkan Sekarang"
+		"restore_now": "Pulihkan Sekarang",
+		"restoring_images": "Memulihkan gambar: {{current}}/{{total}}",
+		"adding_transaction": "Menambahkan transaksi: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "Tidak Ada Data",
@@ -124,6 +126,12 @@
 	},
 	"monthly_balance_calendar": "Kalender Saldo Bulanan",
 	"expense_analysis": "Analisis Pengeluaran",
+	"average_per_transaction": "Rata-rata per Transaksi",
+	"predicted_spends": "Prediksi Pengeluaran",
+	"total_expenses_daily": "Total Pengeluaran (Harian)",
+	"total_expenses_monthly": "Total Pengeluaran (Bulanan)",
+	"total_income_daily": "Total Pemasukan (Harian)",
+	"total_income_monthly": "Total Pemasukan (Bulanan)",
 	"month": "Bulan",
 	"year": "Tahun",
 	"all_time": "Semua Waktu",

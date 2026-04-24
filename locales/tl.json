@@ -68,8 +68,10 @@
 		"total_budgets": "Totál Orsamentu",
 		"images": "Imajen",
 		"currency": "Moeda",
-		"restoring": "Restaura hela...",
-		"restore_now": "Restaura Agora"
+		"restoring": "Ibinabalik...",
+		"restore_now": "Ibalik Ngayon",
+		"restoring_images": "Ibinabalik ang mga larawan: {{current}}/{{total}}",
+		"adding_transaction": "Idinaragdag ang transaksyon: {{current}}/{{total}}"
 	},
 	"export": {
 		"no_data_title": "Laiha Dadus",
@@ -123,8 +125,14 @@
 		"backup_now": "Halo Backup Agora"
 	},
 	"monthly_balance_calendar": "Kalendáriu Balansu Mensál",
-	"expense_analysis": "Analize Despeza",
-	"month": "Fulan",
+	"expense_analysis": "Pagsusuri ng Gastusin",
+	"average_per_transaction": "Average bawat Transaksyon",
+	"predicted_spends": "Inaasahang Gastusin",
+	"total_expenses_daily": "Kabuuang Gastusin (Araw-araw)",
+	"total_expenses_monthly": "Kabuuang Gastusin (Buwanan)",
+	"total_income_daily": "Kabuuang Kita (Araw-araw)",
+	"total_income_monthly": "Kabuuang Kita (Buwanan)",
+	"month": "Buwan",
 	"year": "Tinan",
 	"all_time": "Tempu Hotu",
 	"by_category": "Tuir Kategoria",
