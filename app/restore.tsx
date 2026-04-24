@@ -23,7 +23,7 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
     const { simpan: simpanKategori, hapusSemua: hapusSemuaKategori } = useKategori();
     const [isRestoring, setIsRestoring] = useState(false);
     const [parsedData, setParsedData] = useState<{ transactions: Transaction[], categories: Category[], images: Record<string, string>, budget: TipeBudget, preference: { mataUang: MataUang, notifikasi: { opsi: boolean, waktu: { hour: number, minute: number } } }, backupCreatedAt: string, version: number } | null>(null);
-    const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
+    const [progress, setProgress] = useState<{ current: number; total: number; type?: 'images' | 'transactions' } | null>(null);
     const { t } = useTranslation();
 
     const handlePickFile = async () => {
@@ -62,15 +62,26 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
         setIsRestoring(true);
         try {
             const imageUriMap: Record<string, string> = {}; // oldUri -> newUri
-            for (const [oldUri, base64] of Object.entries(parsedData.images || {})) {
+            const imageEntries = Object.entries(parsedData.images || {});
+            const totalImages = imageEntries.length;
+            let currentImage = 0;
+
+            if (totalImages > 0) {
+                setProgress({ current: 0, total: totalImages, type: 'images' });
+            }
+
+            for (const [oldUri, base64] of imageEntries) {
                 const ext = oldUri.split('.').pop() || 'jpg';
                 const newUri = `${RNFS.DocumentDirectoryPath}/restored_${Date.now()}_${Math.floor(Math.random() * 10000)}.${ext}`;
                 await RNFS.writeFile(newUri, base64 as string, 'base64');
                 imageUriMap[oldUri] = 'file://' + newUri;
+                
+                currentImage++;
+                setProgress({ current: currentImage, total: totalImages, type: 'images' });
             }
 
             await gantiMataUang(parsedData.preference.mataUang.symbol);
-            await gantiNotifikasi(parsedData.preference.notifikasi.opsi, parsedData.preference.notifikasi.waktu);
+            await gantiNotifikasi(parsedData.preference.notifikasi.opsi, parsedData.preference.notifikasi.waktu, true);
 
             await hapusSemuaBudget();
             await simpanBudget(parsedData.budget);
@@ -82,7 +93,7 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
             await hapusSemuaTransaction();
             const totalTransactions = parsedData.transactions.length;
             const newTransactions: Transaction[] = [];
-            setProgress({ current: 0, total: totalTransactions });
+            setProgress({ current: 0, total: totalTransactions, type: 'transactions' });
 
             for (let i = 0; i < totalTransactions; i++) {
                 const t = parsedData.transactions[i];
@@ -91,8 +102,13 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
                     newT.imageUri = imageUriMap[newT.imageUri];
                 }
                 newTransactions.push(newT);
-                setProgress({ current: i + 1, total: totalTransactions });
+                
+                if (i % 50 === 0) {
+                    setProgress({ current: i + 1, total: totalTransactions, type: 'transactions' });
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                }
             }
+            setProgress({ current: totalTransactions, total: totalTransactions, type: 'transactions' });
 
             // Bulk save all restored transactions at once for better performance
             await storageUtils.saveTransactions(newTransactions);
@@ -152,7 +168,9 @@ export default function Restore({ onBack, onDone }: { onBack?: () => void, onDon
                                 </TouchableOpacity>
                                 {progress && (
                                     <Text style={[styles.summaryText, { marginTop: 8 }]}>
-                                        {`Adding transaction: ${progress.current}/${progress.total}`}
+                                        {progress.type === 'images'
+                                            ? `Restoring images: ${progress.current}/${progress.total}`
+                                            : `Adding transaction: ${progress.current}/${progress.total}`}
                                     </Text>
                                 )}
                             </View>

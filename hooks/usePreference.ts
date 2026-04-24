@@ -57,7 +57,7 @@ interface NotifikasiState {
     opsi: boolean,
     waktu: { hour: number, minute: number },
     dapat: () => Promise<void>
-    ganti: (opsi: boolean, waktu: { hour: number, minute: number }) => Promise<void>
+    ganti: (opsi: boolean, waktu: { hour: number, minute: number }, isRestore?: boolean) => Promise<void>
 }
 
 export const useNotifikasi = create<NotifikasiState>((set, get) => ({
@@ -67,14 +67,16 @@ export const useNotifikasi = create<NotifikasiState>((set, get) => ({
         const [opsi_notfikasi, waktu_notifikasi] = await storageUtils.dapatinNotifikasi();
         set({ opsi: opsi_notfikasi, waktu: waktu_notifikasi });
     },
-    ganti: async (opsi_notfikasi, waktu_notifikasi) => {
+    ganti: async (opsi_notfikasi, waktu_notifikasi, isRestore = false) => {
         await storageUtils.simpanOpsiNotifikasi(opsi_notfikasi);
         await storageUtils.simpanWaktuNotifikasi(waktu_notifikasi);
         set({ opsi: opsi_notfikasi, waktu: waktu_notifikasi });
 
         if (opsi_notfikasi) {
-            const hasPermission = await requestNotificationPermission();
-            if (!hasPermission) return;
+            if (!isRestore) {
+                const hasPermission = await requestNotificationPermission();
+                if (!hasPermission) return;
+            }
             await scheduleDailyReminder(waktu_notifikasi.hour, waktu_notifikasi.minute);
         } else {
             await cancelDailyReminder();
