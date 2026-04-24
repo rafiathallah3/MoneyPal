@@ -87,7 +87,7 @@ export default function AnalysisScreen() {
 	const { mataUang, dapat: dapatMataUang } = useMataUang();
 	const { transactions, dapat: dapatTransaksi } = useTransactions();
 	const [pieData, setPieData] = useState<any[]>([]);
-	const [lineData, setLineData] = useState<{ labels: string[]; data: number[] }>({ labels: [], data: [] });
+	const [lineData, setLineData] = useState<{ labels: string[]; data: number[]; predictionData?: number[] }>({ labels: [], data: [] });
 	const [summaryMode, setSummaryMode] = useState<SummaryMode>('month');
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedPieIndex, setSelectedPieIndex] = useState<number | null>(null);
@@ -132,15 +132,21 @@ export default function AnalysisScreen() {
 				return parseInt(tYear) === year;
 			});
 		}
-		const categoryTotals: { [cat: string]: number } = {};
+		const categoryData: { [cat: string]: { total: number; count: number } } = {};
 		filtered.forEach(t => {
 			if (!t.category) return;
-			categoryTotals[t.category] = (categoryTotals[t.category] || 0) + t.amount;
+			if (!categoryData[t.category]) {
+				categoryData[t.category] = { total: 0, count: 0 };
+			}
+			categoryData[t.category].total += t.amount;
+			categoryData[t.category].count += 1;
 		});
-		const pie = Object.entries(categoryTotals).map(([cat, value], i) => {
+		const pie = Object.entries(categoryData).map(([cat, data], i) => {
 			const catObj = getCategoryById(cat, transactionType, kategori.filter((v) => v.type === transactionType)) ?? getCategoryById(transactionType === 'income' ? "other_income" : "other_expense", transactionType);
 			return {
-				value: value,
+				value: data.total,
+				average: data.total / data.count,
+				count: data.count,
 				text: catObj ? TranslateKategori[i18n.language][catObj.id] ? TranslateKategori[i18n.language][catObj.id] : catObj.name : cat,
 				color: catObj ? catObj.color : '#ccc',
 				// category: catObj ? TranslateKategori[i18n.language][catObj.id] ? TranslateKategori[i18n.language][catObj.id] : catObj.name : cat,
@@ -158,6 +164,13 @@ export default function AnalysisScreen() {
 			const daysInMonth = new Date(year, month + 1, 0).getDate();
 			const labels: string[] = [];
 			const data: number[] = [];
+
+			const today = new Date();
+			const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+			const currentDay = today.getDate();
+
+			let totalSpentSoFar = 0;
+			let daysElapsed = 0;
 
 			for (let d = 1; d <= daysInMonth; d++) {
 				const tanggal = new Date(year, month, d)
@@ -188,14 +201,40 @@ export default function AnalysisScreen() {
 				const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 				const total = all.filter(t => t.type === transactionType && t.date === dateStr).reduce((sum, t) => sum + t.amount, 0);
 				data.push(total);
+
+				if (isCurrentMonth && d <= currentDay) {
+					totalSpentSoFar += total;
+					daysElapsed++;
+				}
 			}
 
-			setLineData({ labels, data });
+			let predictionData: number[] | undefined;
+			if (isCurrentMonth && daysElapsed > 0) {
+				const averagePerDay = totalSpentSoFar / daysElapsed;
+				predictionData = [];
+				for (let d = 1; d <= daysInMonth; d++) {
+					if (d <= currentDay) {
+						predictionData.push(data[d - 1]); // Match actual up to today
+					} else {
+						predictionData.push(averagePerDay); // Project average for future days
+					}
+				}
+			}
+
+			setLineData({ labels, data, predictionData });
 		} else if (summaryMode === 'year') {
 			// Show monthly expenses/income for the selected year
 			const year = selectedDate.getFullYear();
 			const labels: string[] = [];
 			const data: number[] = [];
+			
+			const today = new Date();
+			const isCurrentYear = today.getFullYear() === year;
+			const currentMonth = today.getMonth();
+
+			let totalSpentSoFar = 0;
+			let monthsElapsed = 0;
+
 			for (let m = 0; m < 12; m++) {
 				const d = new Date(year, m, 1);
 				const label = d.toLocaleDateString(i18n.language, { month: 'short' }) + ' ' + d.getFullYear().toString().slice(-2);
@@ -203,8 +242,27 @@ export default function AnalysisScreen() {
 				const monthStr = `${year}-${String(m + 1).padStart(2, '0')}`;
 				const total = all.filter(t => t.type === transactionType && t.date.startsWith(monthStr)).reduce((sum, t) => sum + t.amount, 0);
 				data.push(total);
+
+				if (isCurrentYear && m <= currentMonth) {
+					totalSpentSoFar += total;
+					monthsElapsed++;
+				}
 			}
-			setLineData({ labels, data });
+
+			let predictionData: number[] | undefined;
+			if (isCurrentYear && monthsElapsed > 0) {
+				const averagePerMonth = totalSpentSoFar / monthsElapsed;
+				predictionData = [];
+				for (let m = 0; m < 12; m++) {
+					if (m <= currentMonth) {
+						predictionData.push(data[m]); // Match actual up to current month
+					} else {
+						predictionData.push(averagePerMonth); // Project average for future months
+					}
+				}
+			}
+
+			setLineData({ labels, data, predictionData });
 		} else {
 			// All time: last 12 months
 			const now = new Date();
@@ -358,6 +416,32 @@ export default function AnalysisScreen() {
 									<Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_pie_chart') : t('no_income_data_for_pie_chart')}</Text>
 								)}
 							</View>
+							
+							{/* Average per Category Card */}
+							<View style={styles.card}>
+								<Text style={styles.sectionTitle}>{t('average_per_transaction')} ({formatAnalysisDate(selectedDate, summaryMode, i18n.language, t)})</Text>
+								{pieData.length > 0 ? (
+									<View style={{ marginTop: 8 }}>
+										{pieData.map((d, _) => {
+											return (
+												<View key={d.text} style={styles.pieDetailRow}>
+													<View style={[styles.pieColorDot, { backgroundColor: d.color }]} />
+													<View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+														<Text style={styles.pieDetailName}>{d.text}</Text>
+														<View style={{ alignItems: 'flex-end' }}>
+															<Text style={styles.pieDetailAmount}>{d.average.toLocaleString(undefined, { style: 'currency', currency: 'USD' }).replace("$", mataUang.symbol)}</Text>
+															<Text style={{ fontSize: 12, color: '#6c757d' }}>{d.count} {d.count === 1 ? 'trx' : 'trxs'}</Text>
+														</View>
+													</View>
+												</View>
+											);
+										})}
+									</View>
+								) : (
+									<Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_pie_chart') : t('no_income_data_for_pie_chart')}</Text>
+								)}
+							</View>
+
 							{/* Line Chart Card */}
 							<View style={styles.card}>
 								<Text style={styles.sectionTitle}>
@@ -368,8 +452,9 @@ export default function AnalysisScreen() {
 											: `${transactionType === 'expense' ? t('spending_over_time') : t('income_over_time')}\n(${t('last_12_months')})`}
 								</Text>
 								{lineData.data.length > 0 ? (
-									<View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-										{/* Y Axis labels */}
+									<View>
+										<View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+											{/* Y Axis labels */}
 										<View style={{ width: 50, height: 220, justifyContent: 'space-between', alignItems: 'flex-end', paddingVertical: 8 }}>
 											{[...Array(5)].map((_, i) => {
 												// 5 ticks, from max to min
@@ -386,6 +471,22 @@ export default function AnalysisScreen() {
 										<View>
 											<LineChart
 												lines={[
+													...(lineData.predictionData && lineData.predictionData.length > 0 ? [{
+														data: lineData.predictionData.map((y, i) => ({
+															y,
+															x: i,
+															extraData: {
+																formattedValue: uangUtils.formatAmount(y, mataUang) + " (Predicted)",
+																formattedTime: lineData.labels[i],
+															},
+														})),
+														lineColor: '#adb5bd',
+														curve: 'linear' as const,
+														activePointConfig: {
+															color: '#adb5bd',
+															showVerticalLine: true,
+														},
+													}] : []),
 													{
 														data: lineData.data.map((y, i) => ({
 															y,
@@ -422,7 +523,7 @@ export default function AnalysisScreen() {
 																</Text>
 															</View>
 														),
-													},
+													}
 												]}
 												height={220}
 												width={screenWidth - 110}
@@ -460,6 +561,26 @@ export default function AnalysisScreen() {
 											</View>
 										</View>
 									</View>
+									{/* Chart Legend */}
+									<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20, paddingHorizontal: 10, flexWrap: 'wrap' }}>
+										<View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
+											<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#007bff', marginRight: 8 }} />
+											<Text style={{ fontSize: 12, color: '#495057' }}>
+												{transactionType === 'expense' 
+													? (summaryMode === 'month' ? t('total_expenses_daily') : t('total_expenses_monthly')) 
+													: (summaryMode === 'month' ? t('total_income_daily') : t('total_income_monthly'))}
+											</Text>
+										</View>
+										{lineData.predictionData && lineData.predictionData.length > 0 && (
+											<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+												<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#adb5bd', marginRight: 8 }} />
+												<Text style={{ fontSize: 12, color: '#495057' }}>
+													{t('predicted_spends')}
+												</Text>
+											</View>
+										)}
+									</View>
+								</View>
 								) : (
 									<Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_line_chart') : `No ${t('summary.income').toLowerCase()} data for line chart.`}</Text>
 								)}
