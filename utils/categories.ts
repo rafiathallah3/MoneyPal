@@ -22,7 +22,7 @@ export const TranslateKategori: { [bahasa: string]: { [id: string]: string } } =
     "other_income": "Other",
   },
   "id": {
-    "food": "Makanan & Makan",
+    "food": "Makanan & Minuman",
     "transport": "Transportasi",
     "shopping": "Belanja",
     "entertainment": "Hiburan",
@@ -122,7 +122,7 @@ export const TranslateKategori: { [bahasa: string]: { [id: string]: string } } =
     "other_income": "အခြား",
   },
   "jv": {
-    "food": "Makanan & Makan",
+    "food": "Makanan & Minuman",
     "transport": "Transportasi",
     "shopping": "Belanja",
     "entertainment": "Hiburan",
