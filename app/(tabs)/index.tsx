@@ -205,7 +205,11 @@ export default function MoneyPal() {
             });
         }
 
-        return filtered;
+        return filtered.sort((a, b) => {
+            const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return timeB - timeA;
+        });
     }, [selectedDate, summaryMode, allTransactions]);
 
     // Ensure loading is stopped when transactionsDiTunjukan changes (even if empty)

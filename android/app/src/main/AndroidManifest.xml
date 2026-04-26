@@ -33,7 +33,7 @@
         <data android:scheme="exp+moneypal"/>
       </intent-filter>
     </activity>
-    <receiver android:name=".widget.HelloWidget" android:exported="false" android:label="MoneyPal (3x2)">
+    <receiver android:name=".widget.HelloWidget" android:exported="false" android:label="MoneyPal (3x1)">
       <intent-filter>
         <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
         <action android:name="com.anonymous.MoneyPal.WIDGET_CLICK"/>

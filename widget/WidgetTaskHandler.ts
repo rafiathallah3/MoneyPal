@@ -21,6 +21,27 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
   const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   const transactions: Transaction[] = await storageUtils.getTransactionsForDate(today);
   const currencySymbol = await storageUtils.dapatinMataUang();
+  
+  const language = await storageUtils.dapatinBahasa();
+  const locales: Record<string, any> = {
+    en: require('../locales/en.json'),
+    id: require('../locales/id.json'),
+    ja: require('../locales/ja.json'),
+    zh: require('../locales/zh.json'),
+    tl: require('../locales/tl.json'),
+    mm: require('../locales/mm.json'),
+    jv: require('../locales/jv.json'),
+    sn: require('../locales/sn.json')
+  };
+  const translations = locales[language] || locales['en'];
+  const todayStrings: Record<string, string> = {
+    en: "Today", id: "Hari Ini", ja: "今日", zh: "今天", tl: "Ohin", mm: "ယနေ့", jv: "Dina Iki", sn: "Dinten Ieu"
+  };
+  const widgetTranslations = {
+    today: todayStrings[language] || "Today",
+    transactions: translations.transactions || "Transactions",
+    noTransactions: translations.no_transactions_for_this_summary_mode || "No transactions today"
+  };
 
   // Calculate totals
   let totalIncome = 0;
@@ -36,7 +57,9 @@ export async function widgetTaskHandler(props: WidgetTaskHandlerProps) {
       transactions,
       totalIncome,
       totalExpense,
-      currencySymbol
+      currencySymbol,
+      language,
+      widgetTranslations
     })
   );
 }

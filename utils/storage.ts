@@ -22,31 +22,7 @@ export const storageUtils = {
       
       // Attempt to update the Android widget
       try {
-        const { requestWidgetUpdate } = require('react-native-android-widget');
-        const React = require('react');
-        const { WidgetUI } = require('../widget/WidgetUI');
-
-        const now = new Date();
-        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-        const todayTransactions = transactions.filter(t => t.date === today);
-        const currencySymbol = await storageUtils.dapatinMataUang();
-
-        let totalIncome = 0;
-        let totalExpense = 0;
-        todayTransactions.forEach((t) => {
-          if (t.type === 'income') totalIncome += t.amount;
-          if (t.type === 'expense') totalExpense += t.amount;
-        });
-
-        await requestWidgetUpdate({
-          widgetName: 'HelloWidget',
-          renderWidget: () => React.createElement(WidgetUI, {
-            transactions: todayTransactions,
-            totalIncome,
-            totalExpense,
-            currencySymbol
-          }),
-        });
+        await this.updateWidget();
       } catch (e) {
         console.error('Error updating widget:', e);
       }
@@ -341,8 +317,64 @@ export const storageUtils = {
   async simpanBahasa(bahasa: string): Promise<void> {
     try {
       await AsyncStorage.setItem(LANG_KEY, bahasa);
+      await this.updateWidget();
     } catch (error) {
       console.error('Error saving language:', error);
+    }
+  },
+
+  async updateWidget(): Promise<void> {
+    try {
+      const { requestWidgetUpdate } = require('react-native-android-widget');
+      const React = require('react');
+      const { WidgetUI } = require('../widget/WidgetUI');
+
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const transactions = await this.getTransactionsForDate(today);
+      const currencySymbol = await this.dapatinMataUang();
+      
+      const language = await this.dapatinBahasa();
+      const locales: Record<string, any> = {
+        en: require('../locales/en.json'),
+        id: require('../locales/id.json'),
+        ja: require('../locales/ja.json'),
+        zh: require('../locales/zh.json'),
+        tl: require('../locales/tl.json'),
+        mm: require('../locales/mm.json'),
+        jv: require('../locales/jv.json'),
+        sn: require('../locales/sn.json')
+      };
+      const translations = locales[language] || locales['en'];
+      const todayStrings: Record<string, string> = {
+        en: "Today", id: "Hari Ini", ja: "今日", zh: "今天", tl: "Ohin", mm: "ယနေ့", jv: "Dina Iki", sn: "Dinten Ieu"
+      };
+      const widgetTranslations = {
+        today: todayStrings[language] || "Today",
+        transactions: translations.transactions || "Transactions",
+        noTransactions: translations.no_transactions_for_this_summary_mode || "No transactions today"
+      };
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      transactions.forEach((t) => {
+        if (t.type === 'income') totalIncome += t.amount;
+        if (t.type === 'expense') totalExpense += t.amount;
+      });
+
+      await requestWidgetUpdate({
+        widgetName: 'HelloWidget',
+        renderWidget: () => React.createElement(WidgetUI, {
+          transactions,
+          totalIncome,
+          totalExpense,
+          currencySymbol,
+          language,
+          widgetTranslations
+        }),
+      });
+    } catch (e) {
+      console.error('Error updating widget:', e);
     }
   },
 

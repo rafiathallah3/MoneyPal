@@ -1,18 +1,28 @@
 import React from 'react';
-import { FlexWidget, TextWidget, ImageWidget } from 'react-native-android-widget';
+import { FlexWidget, ImageWidget, TextWidget } from 'react-native-android-widget';
 import { Transaction } from '../types/types';
-import { getCategoryById } from '../utils/categories';
+import { getCategoryById, TranslateKategori } from '../utils/categories';
 
 interface WidgetUIProps {
   transactions: Transaction[];
   totalIncome: number;
   totalExpense: number;
   currencySymbol: string;
+  language: string;
+  widgetTranslations: {
+    today: string;
+    transactions: string;
+    noTransactions: string;
+  };
 }
 
-export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymbol }: WidgetUIProps) {
+export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymbol, language, widgetTranslations }: WidgetUIProps) {
   const netTotal = totalIncome - totalExpense;
   const isPositive = netTotal >= 0;
+
+  const recentTransactions = [...transactions].sort((a, b) => {
+    return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+  });
 
   return (
     <FlexWidget
@@ -42,10 +52,10 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
           image={require('../assets/images/icon.png')}
           imageWidth={48}
           imageHeight={48}
-          style={{ width: 48, height: 48, marginBottom: 8 }}
+          style={{ width: 48, height: 48, marginBottom: 2 }}
         />
         <TextWidget
-          text="Today"
+          text={widgetTranslations.today}
           style={{ fontSize: 16, color: '#ffffff', fontWeight: 'bold' }}
         />
       </FlexWidget>
@@ -59,10 +69,11 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
           flexDirection: 'column',
         }}
       >
-        <FlexWidget style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <FlexWidget style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, borderBottomWidth: 1, borderColor: '#e9ecef', paddingBottom: 6 }}>
           <TextWidget
-            text="Transactions"
-            style={{ fontSize: 14, color: '#2c3e50', fontWeight: 'bold' }}
+            text={widgetTranslations.transactions}
+            style={{ fontSize: 14, color: '#2c3e50', fontWeight: 'bold', width: 100 }}
+            maxLines={1}
           />
           <TextWidget
             text={`${isPositive ? '+ ' : '- '}${currencySymbol}${Math.abs(netTotal).toLocaleString()}`}
@@ -72,15 +83,15 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
         </FlexWidget>
 
         <FlexWidget style={{ flexDirection: 'column', flex: 1 }}>
-          {transactions.length === 0 ? (
+          {recentTransactions.length === 0 ? (
             <FlexWidget style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextWidget
-                text="No transactions today"
+                text={widgetTranslations.noTransactions}
                 style={{ fontSize: 13, color: '#adb5bd' }}
               />
             </FlexWidget>
           ) : (
-            transactions.slice(0, 3).map((t, index) => (
+            recentTransactions.slice(0, 1).map((t, index) => (
               <FlexWidget
                 key={t.id || index.toString()}
                 style={{
@@ -88,13 +99,13 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   paddingVertical: 4,
-                  borderBottomWidth: index === transactions.slice(0, 3).length - 1 ? 0 : 1,
+                  borderBottomWidth: 0,
                   borderColor: '#f8f9fa',
                 }}
               >
-                <FlexWidget style={{ flexDirection: 'column', flex: 1, paddingRight: 4 }}>
+                <FlexWidget style={{ flexDirection: 'column', width: 100, paddingRight: 4 }}>
                   <TextWidget
-                    text={getCategoryById(t.category || '', t.type)?.name || t.category || 'Unknown'}
+                    text={t.category && TranslateKategori[language]?.[t.category] ? TranslateKategori[language][t.category] : getCategoryById(t.category || '', t.type)?.name || t.category || 'Unknown'}
                     style={{ fontSize: 13, color: '#495057', fontWeight: 'bold' }}
                     maxLines={1}
                   />
@@ -118,12 +129,12 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
               </FlexWidget>
             ))
           )}
-          
-          {transactions.length > 3 && (
-            <FlexWidget style={{ alignItems: 'center', marginTop: 4 }}>
+
+          {recentTransactions.length > 1 && (
+            <FlexWidget style={{ alignItems: 'center' }}>
               <TextWidget
-                text={`+${transactions.length - 3} more`}
-                style={{ fontSize: 11, color: '#007bff' }}
+                text={`+${recentTransactions.length - 1}`}
+                style={{ fontSize: 11, color: '#007bff', fontWeight: 'bold' }}
               />
             </FlexWidget>
           )}

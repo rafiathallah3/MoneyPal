@@ -61,7 +61,14 @@ export default function AllTransactions() {
         const items: ListItem[] = [];
         sorted.forEach(([title, transactions]) => {
             items.push({ type: 'header', title, id: `header-${title}` });
-            transactions.forEach(tx => {
+            
+            const sortedTransactions = [...transactions].sort((a, b) => {
+                const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return timeB - timeA;
+            });
+
+            sortedTransactions.forEach(tx => {
                 items.push({ type: 'transaction', data: tx });
             });
         });
