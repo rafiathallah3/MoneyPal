@@ -1,6 +1,6 @@
 {
   "name": "moneypal",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -45,6 +45,7 @@
     "react": "19.0.0",
     "react-i18next": "^15.6.1",
     "react-native": "0.79.5",
+    "react-native-android-widget": "^0.20.1",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-gifted-charts": "^1.4.61",

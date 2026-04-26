@@ -19,6 +19,37 @@ export const storageUtils = {
   async saveTransactions(transactions: Transaction[]): Promise<void> {
     try {
       await AsyncStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(transactions));
+      
+      // Attempt to update the Android widget
+      try {
+        const { requestWidgetUpdate } = require('react-native-android-widget');
+        const React = require('react');
+        const { WidgetUI } = require('../widget/WidgetUI');
+
+        const now = new Date();
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const todayTransactions = transactions.filter(t => t.date === today);
+        const currencySymbol = await storageUtils.dapatinMataUang();
+
+        let totalIncome = 0;
+        let totalExpense = 0;
+        todayTransactions.forEach((t) => {
+          if (t.type === 'income') totalIncome += t.amount;
+          if (t.type === 'expense') totalExpense += t.amount;
+        });
+
+        await requestWidgetUpdate({
+          widgetName: 'HelloWidget',
+          renderWidget: () => React.createElement(WidgetUI, {
+            transactions: todayTransactions,
+            totalIncome,
+            totalExpense,
+            currencySymbol
+          }),
+        });
+      } catch (e) {
+        console.error('Error updating widget:', e);
+      }
     } catch (error) {
       console.error('Error saving transactions:', error);
     }

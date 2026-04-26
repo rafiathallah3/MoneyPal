@@ -54,6 +54,22 @@
           "androidAppId": "ca-app-pub-8697291704601178~6146599077",
           "iosAppId": "ca-app-pub-3940256099942544~1458002511"
         }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "HelloWidget",
+              "label": "MoneyPal (3x1)",
+              "minWidth": "180dp",
+              "minHeight": "40dp",
+              "targetCellWidth": 3,
+              "targetCellHeight": 1,
+              "description": "Shows your transactions for today"
+            }
+          ]
+        }
       ]
     ],
     "experiments": {
