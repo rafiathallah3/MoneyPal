@@ -210,7 +210,18 @@
 		"choose_option": "选择一个选项",
 		"take_photo": "拍照",
 		"pick_from_gallery": "从相册选择",
-		"permission_needed_message_camera": "拍照需要访问相机权限。"
+		"permission_needed_message_camera": "拍照需要访问相机权限。",
+		"recurring_label": "定期交易",
+		"interval_label": "周期",
+		"daily": "每日",
+		"weekly": "每周",
+		"monthly": "每月",
+		"yearly": "每年",
+		"occurrences_label": "结束于",
+		"forever": "永久",
+		"times": "次",
+		"subscription_label": "标记为订阅",
+		"recurring_section_title": "订阅与定期交易"
 	},
 	"calculator": {
 		"clear": "清除",

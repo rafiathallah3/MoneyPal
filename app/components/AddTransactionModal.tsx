@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Image, Modal, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Modal, Platform, ScrollView, StyleSheet, Switch, TouchableOpacity, View } from 'react-native';
 import { Category, MataUang, TipeBudget, Transaction, TransactionFormData } from '../../types/types';
 import { getCategoryById, TranslateKategori } from '../../utils/categories';
 import { dateUtils } from '../../utils/dateUtils';
@@ -44,6 +44,10 @@ export default function AddTransactionModal({
         date: dateUtils.formatDate(selectedDate),
         description: '',
         category: '',
+        isRecurring: false,
+        recurrenceInterval: 'monthly',
+        recurrenceEndType: 'forever',
+        recurrenceCount: '1',
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);
@@ -65,6 +69,10 @@ export default function AddTransactionModal({
                 date: transaction.date,
                 description: transaction.description || '',
                 category: transaction.category || '',
+                isRecurring: transaction.isRecurring || false,
+                recurrenceInterval: transaction.recurrenceInterval || 'monthly',
+                recurrenceEndType: transaction.recurrenceEndType || 'forever',
+                recurrenceCount: (transaction.recurrenceCount || 1).toString(),
             });
             setSelectedImage(transaction.imageUri || null);
             setUneditedAmount(transaction.amount);
@@ -81,6 +89,10 @@ export default function AddTransactionModal({
                     date: dateUtils.formatDate(selectedDate),
                     description: '',
                     category: '',
+                    isRecurring: false,
+                    recurrenceInterval: 'monthly',
+                    recurrenceEndType: 'forever',
+                    recurrenceCount: '1',
                 });
                 setSelectedImage(null);
                 setUneditedAmount(0);
@@ -185,6 +197,12 @@ export default function AddTransactionModal({
             description: formData.description.trim() || undefined,
             imageUri: selectedImage || undefined,
             category: formData.category,
+            isRecurring: formData.isRecurring,
+            recurrenceInterval: formData.isRecurring ? formData.recurrenceInterval : undefined,
+            recurrenceEndType: formData.isRecurring ? formData.recurrenceEndType : undefined,
+            recurrenceCount: formData.isRecurring && formData.recurrenceEndType === 'count' ? parseInt(formData.recurrenceCount) : undefined,
+            recurrenceRemaining: formData.isRecurring && formData.recurrenceEndType === 'count' ? parseInt(formData.recurrenceCount) - 1 : undefined,
+            lastRecurrenceDate: formData.isRecurring ? formData.date : undefined,
         };
         if (isEditMode && onUpdate) {
             onUpdate(newTransaction);
@@ -204,6 +222,10 @@ export default function AddTransactionModal({
             date: dateUtils.formatDate(selectedDate),
             description: '',
             category: '',
+            isRecurring: false,
+            recurrenceInterval: 'monthly',
+            recurrenceEndType: 'forever',
+            recurrenceCount: '1',
         });
         setSelectedImage(null);
     };
@@ -371,6 +393,92 @@ export default function AddTransactionModal({
                         />
                     </View>
 
+                    {!(isEditMode && transaction?.parentId) && (
+                        <View style={styles.formGroup}>
+                            <Text style={styles.sectionTitle}>{t('add_transaction.recurring_section_title')}</Text>
+                            <View style={styles.switchRow}>
+                                <Text style={styles.label}>{t('add_transaction.recurring_label')}</Text>
+                                <Switch
+                                    value={formData.isRecurring}
+                                    onValueChange={(value) => setFormData(prev => ({ ...prev, isRecurring: value }))}
+                                    trackColor={{ false: "#ced4da", true: "#007bff" }}
+                                    thumbColor={"#ffffff"}
+                                />
+                            </View>
+                            {formData.isRecurring && (
+                                <View style={styles.recurringOptions}>
+                                    <View style={styles.subFormGroup}>
+                                        <Text style={styles.subLabel}>{t('add_transaction.interval_label')}</Text>
+                                        <View style={styles.intervalButtons}>
+                                            {['daily', 'weekly', 'monthly', 'yearly'].map((interval) => (
+                                                <TouchableOpacity
+                                                    key={interval}
+                                                    style={[
+                                                        styles.intervalButton,
+                                                        formData.recurrenceInterval === interval && styles.intervalButtonActive
+                                                    ]}
+                                                    onPress={() => setFormData(prev => ({ ...prev, recurrenceInterval: interval as any }))}
+                                                >
+                                                    <Text style={[
+                                                        styles.intervalButtonText,
+                                                        formData.recurrenceInterval === interval && styles.intervalButtonTextActive
+                                                    ]}>
+                                                        {t(`add_transaction.${interval}`)}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            ))}
+                                        </View>
+                                    </View>
+
+                                    <View style={styles.subFormGroup}>
+                                        <Text style={styles.subLabel}>{t('add_transaction.occurrences_label')}</Text>
+                                        <View style={styles.endTypeRow}>
+                                            <TouchableOpacity
+                                                style={[
+                                                    styles.endTypeButton,
+                                                    formData.recurrenceEndType === 'forever' && styles.endTypeButtonActive
+                                                ]}
+                                                onPress={() => setFormData(prev => ({ ...prev, recurrenceEndType: 'forever' }))}
+                                            >
+                                                <Text style={[
+                                                    styles.endTypeText,
+                                                    formData.recurrenceEndType === 'forever' && styles.endTypeTextActive
+                                                ]}>
+                                                    {t('add_transaction.forever')}
+                                                </Text>
+                                            </TouchableOpacity>
+                                            <View style={styles.countInputContainer}>
+                                                <TouchableOpacity
+                                                    style={[
+                                                        styles.endTypeButton,
+                                                        formData.recurrenceEndType === 'count' && styles.endTypeButtonActive
+                                                    ]}
+                                                    onPress={() => setFormData(prev => ({ ...prev, recurrenceEndType: 'count' }))}
+                                                >
+                                                    <Text style={[
+                                                        styles.endTypeText,
+                                                        formData.recurrenceEndType === 'count' && styles.endTypeTextActive
+                                                    ]}>
+                                                        {t('add_transaction.times')}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                                {formData.recurrenceEndType === 'count' && (
+                                                    <TextInput
+                                                        style={styles.countInput}
+                                                        value={formData.recurrenceCount}
+                                                        onChangeText={(text) => setFormData(prev => ({ ...prev, recurrenceCount: text.replace(/[^0-9]/g, '') }))}
+                                                        keyboardType="numeric"
+                                                        maxLength={3}
+                                                    />
+                                                )}
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            )}
+                        </View>
+                    )}
+
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>{t('add_transaction.image_label')}</Text>
                         {selectedImage ? (
@@ -398,6 +506,7 @@ export default function AddTransactionModal({
                             </Text>
                         </TouchableOpacity>
                     </View>
+
 
                     {showDatePicker && (
                         <DateTimePicker
@@ -650,4 +759,99 @@ const styles = StyleSheet.create({
     remainingBudgetOver: {
         color: '#dc3545',
     },
-}); 
+    switchRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 8,
+        padding: 12,
+    },
+    recurringOptions: {
+        marginTop: 10,
+        backgroundColor: '#f1f3f5',
+        borderRadius: 8,
+        padding: 12,
+    },
+    subFormGroup: {
+        marginBottom: 15,
+    },
+    subLabel: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#495057',
+        marginBottom: 8,
+    },
+    intervalButtons: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    intervalButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 15,
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+    },
+    intervalButtonActive: {
+        backgroundColor: '#007bff',
+        borderColor: '#007bff',
+    },
+    intervalButtonText: {
+        fontSize: 12,
+        color: '#6c757d',
+    },
+    intervalButtonTextActive: {
+        color: '#ffffff',
+    },
+    endTypeRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    endTypeButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+    },
+    endTypeButtonActive: {
+        backgroundColor: '#28a745',
+        borderColor: '#28a745',
+    },
+    endTypeText: {
+        fontSize: 14,
+        color: '#6c757d',
+    },
+    endTypeTextActive: {
+        color: '#ffffff',
+    },
+    countInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 5,
+    },
+    countInput: {
+        width: 50,
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#ced4da',
+        borderRadius: 4,
+        padding: 4,
+        fontSize: 14,
+        textAlign: 'center',
+    },
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#2c3e50',
+        marginBottom: 12,
+        marginTop: 5,
+    },
+});

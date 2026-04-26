@@ -210,7 +210,18 @@
 		"choose_option": "Pilih Opsi",
 		"take_photo": "Cetak Poto",
 		"pick_from_gallery": "Pilih tina Galéri",
-		"permission_needed_message_camera": "Aksés kaméra diwajibkeun kanggo moto."
+		"permission_needed_message_camera": "Aksés kaméra diwajibkeun kanggo moto.",
+		"recurring_label": "Transaksi Rutin",
+		"interval_label": "Interval",
+		"daily": "Unggal Poé",
+		"weekly": "Unggal Minggu",
+		"monthly": "Unggal Bulan",
+		"yearly": "Unggal Taun",
+		"occurrences_label": "Eureun Sanggeus",
+		"forever": "Saterusna",
+		"times": "kali",
+		"subscription_label": "Cirian salaku Langganan",
+		"recurring_section_title": "Langganan & Rutin"
 	},
 	"calculator": {
 		"clear": "Hapus",

@@ -8,6 +8,13 @@ export interface Transaction {
   description?: string; // Optional description
   imageUri?: string; // Optional image URI
   category?: string; // Transaction category
+  isRecurring?: boolean;
+  recurrenceInterval?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  recurrenceEndType?: 'forever' | 'count';
+  recurrenceCount?: number;
+  recurrenceRemaining?: number;
+  lastRecurrenceDate?: string;
+  parentId?: string;
 }
 
 export interface DailySummary {
@@ -23,6 +30,10 @@ export interface TransactionFormData {
   date: string;
   description: string;
   category: string;
+  isRecurring: boolean;
+  recurrenceInterval: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  recurrenceEndType: 'forever' | 'count';
+  recurrenceCount: string;
 }
 
 export interface Category {

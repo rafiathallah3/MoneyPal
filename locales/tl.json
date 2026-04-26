@@ -210,7 +210,18 @@
 		"choose_option": "Hili opsaun ida",
 		"take_photo": "Hasai Foto",
 		"pick_from_gallery": "Hili husi Galeria",
-		"permission_needed_message_camera": "Presiza asesu kamera hodi hasai foto."
+		"permission_needed_message_camera": "Presiza asesu kamera hodi hasai foto.",
+		"recurring_label": "Paulit-ulit na Transaksyon",
+		"interval_label": "Agwat",
+		"daily": "Araw-araw",
+		"weekly": "Lingguhan",
+		"monthly": "Buwanan",
+		"yearly": "Taunan",
+		"occurrences_label": "Matapos ang",
+		"forever": "Panghabambuhay",
+		"times": "beses",
+		"subscription_label": "Markahan bilang Subscription",
+		"recurring_section_title": "Subscription at Paulit-ulit"
 	},
 	"calculator": {
 		"clear": "Hamos",

@@ -210,7 +210,18 @@
 		"choose_option": "Choose an option",
 		"take_photo": "Take Photo",
 		"pick_from_gallery": "Pick from Gallery",
-		"permission_needed_message_camera": "Camera access is required to take a photo."
+		"permission_needed_message_camera": "Camera access is required to take a photo.",
+		"recurring_label": "Recurring Transaction",
+		"interval_label": "Interval",
+		"daily": "Daily",
+		"weekly": "Weekly",
+		"monthly": "Monthly",
+		"yearly": "Yearly",
+		"occurrences_label": "End After",
+		"forever": "Forever",
+		"times": "times",
+		"subscription_label": "Mark as Subscription",
+		"recurring_section_title": "Subscription & Recurring"
 	},
 	"calculator": {
 		"clear": "Clear",

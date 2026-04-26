@@ -39,5 +39,24 @@ export const dateUtils = {
 
   getMonthString(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  },
+
+  addInterval(date: Date, interval: 'daily' | 'weekly' | 'monthly' | 'yearly'): Date {
+    const newDate = new Date(date);
+    switch (interval) {
+      case 'daily':
+        newDate.setDate(newDate.getDate() + 1);
+        break;
+      case 'weekly':
+        newDate.setDate(newDate.getDate() + 7);
+        break;
+      case 'monthly':
+        newDate.setMonth(newDate.getMonth() + 1);
+        break;
+      case 'yearly':
+        newDate.setFullYear(newDate.getFullYear() + 1);
+        break;
+    }
+    return newDate;
   }
-}; 
+};

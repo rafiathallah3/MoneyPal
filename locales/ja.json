@@ -210,7 +210,18 @@
 		"choose_option": "オプションを選択",
 		"take_photo": "写真を撮影",
 		"pick_from_gallery": "ギャラリーから選択",
-		"permission_needed_message_camera": "写真を撮影するためにはカメラへのアクセスが必要です。"
+		"permission_needed_message_camera": "写真を撮影するためにはカメラへのアクセスが必要です。",
+		"recurring_label": "定期的な取引",
+		"interval_label": "間隔",
+		"daily": "毎日",
+		"weekly": "毎週",
+		"monthly": "毎月",
+		"yearly": "毎年",
+		"occurrences_label": "終了予定",
+		"forever": "無期限",
+		"times": "回",
+		"subscription_label": "サブスクリプションとしてマーク",
+		"recurring_section_title": "サブスクリプションと定期的な取引"
 	},
 	"calculator": {
 		"clear": "クリア",

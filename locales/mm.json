@@ -210,7 +210,18 @@
 		"choose_option": "ရွေးချယ်စရာတစ်ခု ရွေးပါ",
 		"take_photo": "ဓာတ်ပုံ ရိုက်မည်",
 		"pick_from_gallery": "Gallery မှ ရွေးမည်",
-		"permission_needed_message_camera": "ဓာတ်ပုံရိုက်ရန် ကင်မရာအသုံးပြုခွင့် လိုအပ်ပါသည်။"
+		"permission_needed_message_camera": "ဓာတ်ပုံရိုက်ရန် ကင်မရာအသုံးပြုခွင့် လိုအပ်ပါသည်။",
+		"recurring_label": "ပုံမှန် ငွေကြေးလွှဲပြောင်းမှု",
+		"interval_label": "ခြားနားချက်",
+		"daily": "နေ့စဉ်",
+		"weekly": "အပတ်စဉ်",
+		"monthly": "လစဉ်",
+		"yearly": "နှစ်စဉ်",
+		"occurrences_label": "ပြီးနောက် အဆုံးသတ်မည်",
+		"forever": "အမြဲတမ်း",
+		"times": "ကြိမ်",
+		"subscription_label": "စာရင်းသွင်းမှုအဖြစ် သတ်မှတ်မည်",
+		"recurring_section_title": "စာရင်းသွင်းမှုနှင့် ပုံမှန်ငွေကြေးလွှဲပြောင်းမှု"
 	},
 	"calculator": {
 		"clear": "ရှင်းမည်",

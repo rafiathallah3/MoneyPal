@@ -90,6 +90,11 @@ const TransactionItem = ({ transaction, mataUang, theme, onDelete, onEdit, custo
                                     <Text style={styles.categoryIconText}>{category.icon}</Text>
                                 </View>
                                 <Text style={[styles.categoryName, { color: theme.textSecondary, backgroundColor: theme.card }]}>{TranslateKategori[i18n.language][category.id] ? TranslateKategori[i18n.language][category.id] : category.name}</Text>
+                                {transaction.isRecurring && (
+                                    <View style={[styles.recurringBadge, { backgroundColor: theme.primary }]}>
+                                        <Ionicons name="repeat" size={12} color="white" />
+                                    </View>
+                                )}
                             </View>
                             {transaction.description && (
                                 <View style={[styles.descriptionPill, { backgroundColor: theme.card }]}>
@@ -302,4 +307,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-}); 
+    recurringBadge: {
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 8,
+    }
+});

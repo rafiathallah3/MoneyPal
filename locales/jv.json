@@ -210,7 +210,18 @@
 		"choose_option": "Pilih opsi",
 		"take_photo": "Jupuk Foto",
 		"pick_from_gallery": "Pilih saka Galeri",
-		"permission_needed_message_camera": "Akses kamera dibutuhake kanggo njupuk foto."
+		"permission_needed_message_camera": "Akses kamera dibutuhake kanggo njupuk foto.",
+		"recurring_label": "Transaksi Rutin",
+		"interval_label": "Interval",
+		"daily": "Saben Dina",
+		"weekly": "Saben Minggu",
+		"monthly": "Saben Sasi",
+		"yearly": "Saben Taun",
+		"occurrences_label": "Mandheg Sawise",
+		"forever": "Saklawasé",
+		"times": "kaping",
+		"subscription_label": "Tandhani minangka Langganan",
+		"recurring_section_title": "Langganan & Rutin"
 	},
 	"calculator": {
 		"clear": "Resiki",

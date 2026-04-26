@@ -34,8 +34,7 @@ export const storageUtils = {
   // Load all transactions
   async loadTransactions(): Promise<Transaction[]> {
     try {
-      const data = await AsyncStorage.getItem(TRANSACTIONS_KEY);
-      return data ? JSON.parse(data) : [];
+      return await this.processRecurringTransactions();
     } catch (error) {
       console.error('Error loading transactions:', error);
       return [];
@@ -375,6 +374,76 @@ export const storageUtils = {
       });
     } catch (e) {
       console.error('Error updating widget:', e);
+    }
+  },
+
+  async processRecurringTransactions(): Promise<Transaction[]> {
+    try {
+      const data = await AsyncStorage.getItem(TRANSACTIONS_KEY);
+      const allTransactions: Transaction[] = data ? JSON.parse(data) : [];
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      let updatedTransactions = [...allTransactions];
+      let hasOverallChanges = false;
+
+      // Find original recurring templates
+      const recurringTemplates = allTransactions.filter(t => t.isRecurring && !t.parentId);
+
+      for (const template of recurringTemplates) {
+        let lastDateStr = template.lastRecurrenceDate || template.date;
+        const { dateUtils } = require('./dateUtils');
+        let lastDate = dateUtils.parseDate(lastDateStr);
+        let remaining = template.recurrenceRemaining ?? 0;
+        let nextDate = dateUtils.addInterval(lastDate, template.recurrenceInterval!);
+        let hasTemplateChanges = false;
+
+        while (
+          dateUtils.formatDate(nextDate) <= todayStr && 
+          (template.recurrenceEndType === 'forever' || remaining > 0)
+        ) {
+          // Create new transaction
+          const newTransaction: Transaction = {
+            ...template,
+            id: `rec_${template.id}_${nextDate.getTime()}`,
+            date: dateUtils.formatDate(nextDate),
+            createdAt: new Date().toISOString(),
+            isRecurring: false, // Instances are not recurring templates themselves
+            parentId: template.id,
+          };
+          delete newTransaction.recurrenceInterval;
+          delete newTransaction.recurrenceEndType;
+          delete newTransaction.recurrenceCount;
+          delete newTransaction.recurrenceRemaining;
+          delete newTransaction.lastRecurrenceDate;
+
+          updatedTransactions.push(newTransaction);
+          
+          lastDate = nextDate;
+          if (template.recurrenceEndType === 'count') {
+            remaining--;
+          }
+          nextDate = dateUtils.addInterval(lastDate, template.recurrenceInterval!);
+          hasTemplateChanges = true;
+          hasOverallChanges = true;
+        }
+
+        if (hasTemplateChanges) {
+          // Update the template in the list
+          updatedTransactions = updatedTransactions.map(t => 
+            t.id === template.id 
+              ? { ...t, lastRecurrenceDate: dateUtils.formatDate(lastDate), recurrenceRemaining: remaining }
+              : t
+          );
+        }
+      }
+
+      if (hasOverallChanges) {
+        await AsyncStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(updatedTransactions));
+      }
+      return updatedTransactions;
+    } catch (error) {
+      console.error('Error processing recurring transactions:', error);
+      return [];
     }
   },
 

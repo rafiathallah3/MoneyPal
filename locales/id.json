@@ -210,7 +210,18 @@
 		"choose_option": "Pilih opsi",
 		"take_photo": "Ambil Foto",
 		"pick_from_gallery": "Pilih dari Galeri",
-		"permission_needed_message_camera": "Izin untuk mengakses kamera diperlukan untuk mengambil foto."
+		"permission_needed_message_camera": "Izin untuk mengakses kamera diperlukan untuk mengambil foto.",
+		"recurring_label": "Transaksi Berulang",
+		"interval_label": "Interval",
+		"daily": "Harian",
+		"weekly": "Mingguan",
+		"monthly": "Bulanan",
+		"yearly": "Tahunan",
+		"occurrences_label": "Berakhir Setelah",
+		"forever": "Selamanya",
+		"times": "kali",
+		"subscription_label": "Tandai sebagai Langganan",
+		"recurring_section_title": "Langganan & Berulang"
 	},
 	"calculator": {
 		"clear": "Hapus",
