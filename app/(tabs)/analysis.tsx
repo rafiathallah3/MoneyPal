@@ -8,7 +8,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View, InteractionManager } from 'react-native';
+import { Animated, Dimensions, InteractionManager, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import LineChart from 'react-native-simple-line-chart';
 import { Transaction } from '../../types/types';
@@ -227,7 +227,7 @@ export default function AnalysisScreen() {
 			const year = selectedDate.getFullYear();
 			const labels: string[] = [];
 			const data: number[] = [];
-			
+
 			const today = new Date();
 			const isCurrentYear = today.getFullYear() === year;
 			const currentMonth = today.getMonth();
@@ -416,7 +416,7 @@ export default function AnalysisScreen() {
 									<Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_pie_chart') : t('no_income_data_for_pie_chart')}</Text>
 								)}
 							</View>
-							
+
 							{/* Average per Category Card */}
 							<View style={styles.card}>
 								<Text style={styles.sectionTitle}>{t('average_per_transaction')} ({formatAnalysisDate(selectedDate, summaryMode, i18n.language, t)})</Text>
@@ -455,132 +455,156 @@ export default function AnalysisScreen() {
 									<View>
 										<View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
 											{/* Y Axis labels */}
-										<View style={{ width: 50, height: 220, justifyContent: 'space-between', alignItems: 'flex-end', paddingVertical: 8 }}>
-											{[...Array(5)].map((_, i) => {
-												// 5 ticks, from max to min
-												const max = Math.max(...lineData.data);
-												const min = Math.min(...lineData.data);
-												const value = max - ((max - min) / 4) * i;
-												return (
-													<Text key={i} style={{ fontSize: 10, color: '#495057', textAlign: 'right' }}>
-														{mataUang.symbol}{Math.round(value)}
-													</Text>
-												);
-											})}
-										</View>
-										<View>
-											<LineChart
-												lines={[
-													...(lineData.predictionData && lineData.predictionData.length > 0 ? [{
-														data: lineData.predictionData.map((y, i) => ({
-															y,
-															x: i,
-															extraData: {
-																formattedValue: uangUtils.formatAmount(y, mataUang) + " (Predicted)",
-																formattedTime: lineData.labels[i],
-															},
-														})),
-														lineColor: '#adb5bd',
-														curve: 'linear' as const,
-														activePointConfig: {
-															color: '#adb5bd',
-															showVerticalLine: true,
-														},
-													}] : []),
-													{
-														data: lineData.data.map((y, i) => ({
-															y,
-															x: i,
-															extraData: {
-																formattedValue: uangUtils.formatAmount(y, mataUang),
-																formattedTime: lineData.labels[i],
-															},
-														})),
-														lineColor: '#007bff',
-														curve: 'linear',
-														// endPointConfig: {
-														//   color: '#007bff',
-														//   radius: 5,
-														//   animated: true,
-														// },
-														activePointConfig: {
-															color: '#007bff',
-															showVerticalLine: true,
-														},
-														activePointComponent: (point: any) => (
-															<View
-																style={{
-																	backgroundColor: '#007bff',
-																	padding: 10,
-																	borderRadius: 10,
-																}}
-															>
-																<Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
-																	{point?.extraData?.formattedValue}
-																</Text>
-																<Text style={{ color: 'white', textAlign: 'center' }}>
-																	{point?.extraData?.formattedTime}
-																</Text>
-															</View>
-														),
-													}
-												]}
-												height={220}
-												width={screenWidth - 110}
-												backgroundColor={'#fff'}
-											/>
-											{/* X Axis labels */}
-											<View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 4, width: screenWidth - 110 }}>
-												{summaryMode === 'month'
-													? (() => {
-														const daysInMonth = lineData.labels.length;
-														const filteredIndexes = [0, 7, 14, 21, daysInMonth - 1];
-														return lineData.labels.filter((_, i) => filteredIndexes.includes(i)).map((label, i) => {
-															return (
-																<Text
-																	key={i}
-																	style={{ fontSize: 10, fontWeight: 'bold', color: '#495057', width: (screenWidth - 110) / 5, textAlign: 'center' }}
-																	numberOfLines={1}
-																	ellipsizeMode="tail"
-																>
-																	{label}
-																</Text>
-															);
-														});
-													})()
-													: lineData.labels.map((label, i) => (
-														<Text
-															key={i}
-															style={{ fontSize: 9, color: '#495057', width: (screenWidth - 110) / lineData.labels.length, textAlign: 'center', transform: [{ rotate: '30deg' }] }}
-															numberOfLines={1}
-															ellipsizeMode="tail"
-														>
-															{label}
+											<View style={{ width: 50, height: 220, justifyContent: 'space-between', alignItems: 'flex-end', paddingVertical: 8 }}>
+												{[...Array(5)].map((_, i) => {
+													// 5 ticks, from max to min
+													const max = Math.max(...lineData.data);
+													const min = Math.min(...lineData.data);
+													const value = max - ((max - min) / 4) * i;
+													return (
+														<Text key={i} style={{ fontSize: 10, color: '#495057', textAlign: 'right' }}>
+															{mataUang.symbol}{Math.round(value)}
 														</Text>
-													))}
+													);
+												})}
+											</View>
+											<View>
+												<LineChart
+													lines={[
+														...(lineData.predictionData && lineData.predictionData.length > 0 ? [{
+															data: lineData.predictionData.map((y, i) => ({
+																y,
+																x: i,
+																extraData: {
+																	formattedValue: uangUtils.formatAmount(y, mataUang),
+																	formattedTime: lineData.labels[i],
+																	isFuture: summaryMode === 'month' ? i >= new Date().getDate() : i > new Date().getMonth()
+																},
+															})),
+															lineColor: '#adb5bd',
+															curve: 'linear' as const,
+															activePointConfig: {
+																color: '#adb5bd',
+																showVerticalLine: true,
+															},
+															activePointComponent: (point: any) => {
+																if (!point?.extraData?.isFuture) return null;
+																return (
+																	<View
+																		style={{
+																			backgroundColor: '#adb5bd',
+																			padding: 10,
+																			borderRadius: 10,
+																		}}
+																	>
+																		<Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
+																			{point?.extraData?.formattedValue}
+																		</Text>
+																		<Text style={{ color: 'white', textAlign: 'center' }}>
+																			{point?.extraData?.formattedTime}
+																		</Text>
+																	</View>
+																);
+															},
+														}] : []),
+														{
+															data: lineData.data.map((y, i) => ({
+																y,
+																x: i,
+																extraData: {
+																	formattedValue: uangUtils.formatAmount(y, mataUang),
+																	formattedTime: lineData.labels[i],
+																	isFuture: lineData.predictionData && lineData.predictionData.length > 0 ? (summaryMode === 'month' ? i >= new Date().getDate() : i > new Date().getMonth()) : false
+																},
+															})),
+															lineColor: '#007bff',
+															curve: 'linear',
+															// endPointConfig: {
+															//   color: '#007bff',
+															//   radius: 5,
+															//   animated: true,
+															// },
+															activePointConfig: {
+																color: '#007bff',
+																showVerticalLine: true,
+															},
+															activePointComponent: (point: any) => {
+																if (point?.extraData?.isFuture) return null;
+																return (
+																	<View
+																		style={{
+																			backgroundColor: '#007bff',
+																			padding: 10,
+																			borderRadius: 10,
+																		}}
+																	>
+																		<Text style={{ color: 'white', fontWeight: 'bold', textAlign: 'center' }}>
+																			{point?.extraData?.formattedValue}
+																		</Text>
+																		<Text style={{ color: 'white', textAlign: 'center' }}>
+																			{point?.extraData?.formattedTime}
+																		</Text>
+																	</View>
+																);
+															},
+														}
+													]}
+													height={220}
+													width={screenWidth - 110}
+													backgroundColor={'#fff'}
+												/>
+												{/* X Axis labels */}
+												<View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start', marginTop: 4, width: screenWidth - 110 }}>
+													{summaryMode === 'month'
+														? (() => {
+															const daysInMonth = lineData.labels.length;
+															const filteredIndexes = [0, 7, 14, 21, daysInMonth - 1];
+															return lineData.labels.filter((_, i) => filteredIndexes.includes(i)).map((label, i) => {
+																return (
+																	<Text
+																		key={i}
+																		style={{ fontSize: 10, fontWeight: 'bold', color: '#495057', width: (screenWidth - 110) / 5, textAlign: 'center' }}
+																		numberOfLines={1}
+																		ellipsizeMode="tail"
+																	>
+																		{label}
+																	</Text>
+																);
+															});
+														})()
+														: lineData.labels.map((label, i) => (
+															<Text
+																key={i}
+																style={{ fontSize: 9, color: '#495057', width: (screenWidth - 110) / lineData.labels.length, textAlign: 'center', transform: [{ rotate: '30deg' }] }}
+																numberOfLines={1}
+																ellipsizeMode="tail"
+															>
+																{label}
+															</Text>
+														))}
+												</View>
 											</View>
 										</View>
-									</View>
-									{/* Chart Legend */}
-									<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20, paddingHorizontal: 10, flexWrap: 'wrap' }}>
-										<View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
-											<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#007bff', marginRight: 8 }} />
-											<Text style={{ fontSize: 12, color: '#495057' }}>
-												{transactionType === 'expense' 
-													? (summaryMode === 'month' ? t('total_expenses_daily') : t('total_expenses_monthly')) 
-													: (summaryMode === 'month' ? t('total_income_daily') : t('total_income_monthly'))}
-											</Text>
-										</View>
-										{lineData.predictionData && lineData.predictionData.length > 0 && (
-											<View style={{ flexDirection: 'row', alignItems: 'center' }}>
-												<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#adb5bd', marginRight: 8 }} />
+										{/* Chart Legend */}
+										<View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20, paddingHorizontal: 10, flexWrap: 'wrap' }}>
+											<View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 16 }}>
+												<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#007bff', marginRight: 8 }} />
 												<Text style={{ fontSize: 12, color: '#495057' }}>
-													{t('predicted_spends')}
+													{transactionType === 'expense'
+														? (summaryMode === 'month' ? t('total_expenses_daily') : t('total_expenses_monthly'))
+														: (summaryMode === 'month' ? t('total_income_daily') : t('total_income_monthly'))}
 												</Text>
 											</View>
-										)}
+											{lineData.predictionData && lineData.predictionData.length > 0 && (
+												<View style={{ flexDirection: 'row', alignItems: 'center' }}>
+													<View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: '#adb5bd', marginRight: 8 }} />
+													<Text style={{ fontSize: 12, color: '#495057' }}>
+														{t('predicted_spends')}
+													</Text>
+												</View>
+											)}
+										</View>
 									</View>
-								</View>
 								) : (
 									<Text style={styles.emptyText}>{transactionType === 'expense' ? t('no_expense_data_for_line_chart') : `No ${t('summary.income').toLowerCase()} data for line chart.`}</Text>
 								)}
