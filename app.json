@@ -22,7 +22,8 @@
       "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE"
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "com.google.android.gms.permission.AD_ID"
       ],
       "package": "com.anonymous.MoneyPal"
     },
