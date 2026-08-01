@@ -56,7 +56,7 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
         />
         <TextWidget
           text={widgetTranslations.today}
-          style={{ fontSize: 16, color: '#ffffff', fontWeight: 'bold' }}
+          style={{ fontSize: 14, color: '#ffffff', fontWeight: 'bold' }}
         />
       </FlexWidget>
 
@@ -70,14 +70,16 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
         }}
       >
         <FlexWidget style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, borderBottomWidth: 1, borderColor: '#e9ecef', paddingBottom: 6 }}>
-          <TextWidget
-            text={widgetTranslations.transactions}
-            style={{ fontSize: 14, color: '#2c3e50', fontWeight: 'bold', width: 100 }}
-            maxLines={1}
-          />
+          <FlexWidget style={{ flex: 1, paddingRight: 4 }}>
+            <TextWidget
+              text={widgetTranslations.transactions}
+              style={{ fontSize: 12, color: '#2c3e50', fontWeight: 'bold' }}
+              maxLines={1}
+            />
+          </FlexWidget>
           <TextWidget
             text={`${isPositive ? '+ ' : '- '}${currencySymbol}${Math.abs(netTotal).toLocaleString()}`}
-            style={{ fontSize: 13, color: isPositive ? '#4CAF50' : '#F44336', fontWeight: 'bold' }}
+            style={{ fontSize: 12, color: isPositive ? '#4CAF50' : '#F44336', fontWeight: 'bold' }}
             maxLines={1}
           />
         </FlexWidget>
@@ -87,7 +89,7 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
             <FlexWidget style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <TextWidget
                 text={widgetTranslations.noTransactions}
-                style={{ fontSize: 13, color: '#adb5bd' }}
+                style={{ fontSize: 12, color: '#adb5bd' }}
               />
             </FlexWidget>
           ) : (
@@ -103,16 +105,16 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
                   borderColor: '#f8f9fa',
                 }}
               >
-                <FlexWidget style={{ flexDirection: 'column', width: 100, paddingRight: 4 }}>
+                <FlexWidget style={{ flexDirection: 'column', flex: 1, paddingRight: 4 }}>
                   <TextWidget
                     text={t.category && TranslateKategori[language]?.[t.category] ? TranslateKategori[language][t.category] : getCategoryById(t.category || '', t.type)?.name || t.category || 'Unknown'}
-                    style={{ fontSize: 13, color: '#495057', fontWeight: 'bold' }}
+                    style={{ fontSize: 12, color: '#495057', fontWeight: 'bold' }}
                     maxLines={1}
                   />
                   {t.description ? (
                     <TextWidget
                       text={t.description || ''}
-                      style={{ fontSize: 11, color: '#6c757d' }}
+                      style={{ fontSize: 10, color: '#6c757d' }}
                       maxLines={1}
                     />
                   ) : null}
@@ -120,7 +122,7 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
                 <TextWidget
                   text={`${t.type === 'income' ? '+' : '-'}${currencySymbol}${t.amount.toLocaleString()}`}
                   style={{
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: 'bold',
                     color: t.type === 'income' ? '#4CAF50' : '#F44336',
                   }}
@@ -134,7 +136,7 @@ export function WidgetUI({ transactions, totalIncome, totalExpense, currencySymb
             <FlexWidget style={{ alignItems: 'center' }}>
               <TextWidget
                 text={`+${recentTransactions.length - 1}`}
-                style={{ fontSize: 11, color: '#007bff', fontWeight: 'bold' }}
+                style={{ fontSize: 10, color: '#007bff', fontWeight: 'bold' }}
               />
             </FlexWidget>
           )}

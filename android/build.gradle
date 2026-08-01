@@ -1,6 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+  ext {
+    buildToolsVersion = findProperty('android.buildToolsVersion') ?: '36.0.0'
+    minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
+    compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '36')
+    targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '36')
+  }
   repositories {
     google()
     mavenCentral()
