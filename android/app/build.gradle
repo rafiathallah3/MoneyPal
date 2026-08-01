@@ -92,8 +92,8 @@ android {
         applicationId 'com.anonymous.MoneyPal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "1.1.2"
+        versionCode 16
+        versionName "1.1.3"
     }
     signingConfigs {
         debug {
