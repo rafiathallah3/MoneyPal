@@ -16,7 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import i18n from '../utils/i18n';
 import HeaderAplikasi from './components/HeaderAplikasi';
 const APP_NAME = 'MoneyPal';
-const APP_VERSION = 'v1.1.3';
+const APP_VERSION = 'v1.1.4';
 
 const bahasaTeknologi = Localization.getLocales()[0]?.languageCode || 'en';
 
