@@ -354,7 +354,7 @@ export default function AllTransactions() {
                         {isFiltered && (
                             <TouchableOpacity style={styles.filterChipClear} onPress={handleResetFilters}>
                                 <Ionicons name="close-circle" size={16} color="#d32f2f" style={{ marginRight: 4 }} />
-                                <Text style={styles.filterChipClearText}>{t('clear', 'Clear')}</Text>
+                                <Text style={styles.filterChipClearText}>{t('clear_filter', 'Clear')}</Text>
                             </TouchableOpacity>
                         )}
                     </ScrollView>
@@ -393,7 +393,7 @@ export default function AllTransactions() {
                             <View style={styles.modalHeader}>
                                 <View style={styles.modalTitleRow}>
                                     <Ionicons name="funnel" size={20} color="#1976d2" style={{ marginRight: 8 }} />
-                                    <Text style={styles.modalTitle}>{t('select_category', 'Filter by Category')}</Text>
+                                    <Text style={styles.modalTitle}>{t('filter_by_category', 'Filter by Category')}</Text>
                                 </View>
                                 <TouchableOpacity onPress={() => setCategoryModalVisible(false)}>
                                     <Ionicons name="close" size={24} color="#666" />
@@ -473,7 +473,7 @@ export default function AllTransactions() {
                                 <Text style={styles.currencySymbolPrefix}>{mataUang.symbol}</Text>
                                 <TextInput
                                     style={styles.amountInput}
-                                    placeholder="e.g. 50000"
+                                    placeholder={t('example_amount_placeholder', 'e.g. 50000')}
                                     placeholderTextColor="#999"
                                     keyboardType="numeric"
                                     value={tempAmountInput}
@@ -509,7 +509,7 @@ export default function AllTransactions() {
                                                     isSelected && styles.toleranceChipTextSelected,
                                                 ]}
                                             >
-                                                {preset === 0 ? 'Exact' : `±${preset}%`}
+                                                {preset === 0 ? t('exact', 'Exact') : `±${preset}%`}
                                             </Text>
                                         </TouchableOpacity>
                                     );
@@ -537,7 +537,7 @@ export default function AllTransactions() {
                                     </TouchableOpacity>
                                 )}
                                 <TouchableOpacity style={styles.applyActionButton} onPress={handleApplyAmountFilter}>
-                                    <Text style={styles.applyActionButtonText}>{t('apply', 'Apply Filter')}</Text>
+                                    <Text style={styles.applyActionButtonText}>{t('apply_filter', 'Apply Filter')}</Text>
                                 </TouchableOpacity>
                             </View>
                         </Pressable>

@@ -1,25 +1,36 @@
 import { Text } from '@/app/components/StyledText';
+import { useBudget } from '@/hooks/useBudget';
 import { useKategori } from '@/hooks/useCategory';
 import { useMataUang } from '@/hooks/usePreference';
 import { useTransactions } from '@/hooks/useTransactions';
 import { uangUtils } from '@/utils/preferences';
+import { dateUtils } from '@/utils/dateUtils';
+import { lightTheme as theme } from '@/utils/themes';
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Animated, Dimensions, InteractionManager, SafeAreaView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, Animated, Dimensions, FlatList, InteractionManager, Modal, Pressable, SafeAreaView, ScrollView, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { PieChart } from 'react-native-gifted-charts';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LineChart from 'react-native-simple-line-chart';
 import { Transaction } from '../../types/types';
 import { getCategoryById, TranslateKategori } from '../../utils/categories';
+import AddTransactionModal from '../components/AddTransactionModal';
 import BalanceCalendar from '../components/BalanceCalendar';
 import FancyLoader from '../components/FancyLoader';
 import HeaderAplikasi from '../components/HeaderAplikasi';
+import TransactionItem from '../components/TransactionItem';
 
 const screenWidth = Dimensions.get('window').width;
 const SUMMARY_MODES = ['month', 'year', 'all'] as const;
 type SummaryMode = typeof SUMMARY_MODES[number];
+
+type FlashListItem =
+	| { type: 'header'; title: string; id: string }
+	| { type: 'transaction'; data: Transaction; id: string };
 
 function formatAnalysisDate(date: Date, mode: SummaryMode, bahasa: string, t: any): string {
 	if (mode === 'month') {
@@ -85,7 +96,9 @@ export default function AnalysisScreen() {
 	// const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const { kategori, dapat: dapatKategori } = useKategori();
 	const { mataUang, dapat: dapatMataUang } = useMataUang();
-	const { transactions, dapat: dapatTransaksi } = useTransactions();
+	const { transactions, dapat: dapatTransaksi, hapus, update } = useTransactions();
+	const { budgetData, dapat: dapatBudget } = useBudget();
+	const insets = useSafeAreaInsets();
 	const [pieData, setPieData] = useState<any[]>([]);
 	const [lineData, setLineData] = useState<{ labels: string[]; data: number[]; predictionData?: number[] }>({ labels: [], data: [] });
 	const [summaryMode, setSummaryMode] = useState<SummaryMode>('month');
@@ -95,12 +108,23 @@ export default function AnalysisScreen() {
 	const [transactionType, setTransactionType] = useState<'income' | 'expense'>('expense');
 	const { t, i18n } = useTranslation();
 	const isFocused = useIsFocused();
+	const [selectedCategoryModal, setSelectedCategoryModal] = useState<{
+		categoryId: string;
+		text: string;
+		color: string;
+		icon: string;
+		value: number;
+		count: number;
+	} | null>(null);
+	const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+	const [editModalVisible, setEditModalVisible] = useState(false);
 
 	useEffect(() => {
 		(async () => {
 			await dapatMataUang();
 			await dapatKategori();
 			await dapatTransaksi();
+			await dapatBudget();
 		})();
 	}, []);
 
@@ -144,12 +168,13 @@ export default function AnalysisScreen() {
 		const pie = Object.entries(categoryData).map(([cat, data], i) => {
 			const catObj = getCategoryById(cat, transactionType, kategori.filter((v) => v.type === transactionType)) ?? getCategoryById(transactionType === 'income' ? "other_income" : "other_expense", transactionType);
 			return {
+				categoryId: cat,
 				value: data.total,
 				average: data.total / data.count,
 				count: data.count,
 				text: catObj ? TranslateKategori[i18n.language][catObj.id] ? TranslateKategori[i18n.language][catObj.id] : catObj.name : cat,
 				color: catObj ? catObj.color : '#ccc',
-				// category: catObj ? TranslateKategori[i18n.language][catObj.id] ? TranslateKategori[i18n.language][catObj.id] : catObj.name : cat,
+				icon: catObj ? catObj.icon : '📦',
 			};
 		});
 		setPieData(pie.sort((a, b) => b.value - a.value));
@@ -284,6 +309,119 @@ export default function AnalysisScreen() {
 	const totalPie = pieData.reduce((sum, d) => sum + d.value, 0);
 	const handlePiePress = (index: number) => setSelectedPieIndex(index);
 
+	// Transactions for selected category in modal
+	const categoryTransactions = React.useMemo(() => {
+		if (!selectedCategoryModal) return [];
+		let filtered = transactions.filter(t => t.type === transactionType);
+		if (summaryMode === 'month') {
+			const year = selectedDate.getFullYear();
+			const month = selectedDate.getMonth() + 1;
+			filtered = filtered.filter(t => {
+				const [tYear, tMonth] = t.date.split('-');
+				return parseInt(tYear) === year && parseInt(tMonth) === month;
+			});
+		} else if (summaryMode === 'year') {
+			const year = selectedDate.getFullYear();
+			filtered = filtered.filter(t => {
+				const [tYear] = t.date.split('-');
+				return parseInt(tYear) === year;
+			});
+		}
+		return filtered
+			.filter(t => {
+				const txCategory = t.category || (t.type === 'income' ? 'other_income' : 'other_expense');
+				return txCategory === selectedCategoryModal.categoryId;
+			})
+			.sort((a, b) => {
+				const dateDiff = new Date(b.date).getTime() - new Date(a.date).getTime();
+				if (dateDiff !== 0) return dateDiff;
+				const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+				const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+				return timeB - timeA;
+			});
+	}, [transactions, selectedCategoryModal, summaryMode, selectedDate, transactionType]);
+
+	// Group categoryTransactions by date for SectionList with date header
+	const categoryTransactionSections = React.useMemo(() => {
+		const groups: { [date: string]: Transaction[] } = {};
+		categoryTransactions.forEach((t) => {
+			const dateObj = dateUtils.parseDate(t.date);
+			const sectionTitle = dateObj.toLocaleDateString(i18n.language, {
+				weekday: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+			});
+			if (!groups[sectionTitle]) groups[sectionTitle] = [];
+			groups[sectionTitle].push(t);
+		});
+
+		return Object.entries(groups)
+			.sort((a, b) => {
+				const dateA = dateUtils.parseDate(a[1][0].date).getTime();
+				const dateB = dateUtils.parseDate(b[1][0].date).getTime();
+				return dateB - dateA;
+			})
+			.map(([title, trxs]) => {
+				const sortedTransactions = [...trxs].sort((a, b) => {
+					const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+					const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+					return timeB - timeA;
+				});
+				return { title, data: sortedTransactions };
+			});
+	}, [categoryTransactions, i18n.language]);
+
+	// Flattened items for FlashList with date headers
+	const categoryFlashListItems = React.useMemo(() => {
+		const items: FlashListItem[] = [];
+		categoryTransactionSections.forEach((sec) => {
+			items.push({
+				type: 'header',
+				title: sec.title,
+				id: `header-${sec.title}`,
+			});
+			sec.data.forEach((trx) => {
+				items.push({
+					type: 'transaction',
+					data: trx,
+					id: trx.id,
+				});
+			});
+		});
+		return items;
+	}, [categoryTransactionSections]);
+
+	const handleDeleteTransaction = React.useCallback((transactionId: string) => {
+		Alert.alert(
+			t('categories.delete_title', 'Delete Transaction'),
+			t('categories.delete_message', 'Are you sure you want to delete this transaction?'),
+			[
+				{ text: t('categories.cancel', 'Cancel'), style: 'cancel' },
+				{
+					text: t('categories.delete', 'Delete'),
+					style: 'destructive',
+					onPress: async () => {
+						await hapus(transactionId);
+						await dapatTransaksi();
+					},
+				},
+			]
+		);
+	}, [hapus, dapatTransaksi, t]);
+
+	const handleEditTransaction = React.useCallback((transaction: Transaction) => {
+		setEditingTransaction(transaction);
+		setEditModalVisible(true);
+	}, []);
+
+	const handleUpdateTransaction = async (transaction: Transaction) => {
+		await update(transaction);
+		setEditModalVisible(false);
+		setEditingTransaction(null);
+		await dapatTransaksi();
+	};
+
 	return (
 		<LinearGradient
 			colors={["#f8f9fa", "#e3f2fd", "#f8f9fa"]}
@@ -392,13 +530,21 @@ export default function AnalysisScreen() {
 											/>
 										</View>
 										<View style={{ marginTop: 16 }}>
-											{pieData.map((d, _) => {
+											{pieData.map((d, idx) => {
 												const percent = totalPie > 0 ? d.value / totalPie : 0;
 												return (
-													<View key={d.text} style={styles.pieDetailRow}>
+													<TouchableOpacity
+														key={`${d.categoryId}-${idx}`}
+														style={styles.pieDetailRow}
+														activeOpacity={0.7}
+														onPress={() => setSelectedCategoryModal(d)}
+													>
 														<View style={[styles.pieColorDot, { backgroundColor: d.color }]} />
 														<View style={{ flex: 1 }}>
-															<Text style={styles.pieDetailName}>{d.text}</Text>
+															<View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+																<Text style={styles.pieDetailName}>{d.text}</Text>
+																<Ionicons name="chevron-forward" size={16} color="#adb5bd" />
+															</View>
 															<Text style={styles.pieDetailAmount}>{d.value.toLocaleString(undefined, { style: 'currency', currency: 'USD' }).replace("$", mataUang.symbol)}</Text>
 															<View style={styles.pieProgressBarBg}>
 																<View style={[styles.pieProgressBar, { width: `${Math.round(percent * 100)}%`, backgroundColor: d.color, position: 'absolute', left: 0, top: 0, bottom: 0 }]} />
@@ -407,7 +553,7 @@ export default function AnalysisScreen() {
 																</View>
 															</View>
 														</View>
-													</View>
+													</TouchableOpacity>
 												);
 											})}
 										</View>
@@ -623,6 +769,185 @@ export default function AnalysisScreen() {
 						</>
 					)}
 				</ScrollView>
+
+				{/* Category Transactions Modal */}
+				<Modal
+					visible={selectedCategoryModal !== null}
+					transparent
+					animationType="fade"
+
+					statusBarTranslucent={true}
+					onRequestClose={() => setSelectedCategoryModal(null)}
+				>
+					<Pressable
+						style={styles.modalBackdrop}
+						onPress={() => setSelectedCategoryModal(null)}
+					>
+						<Pressable
+							style={[
+								styles.modalSheet,
+								{ paddingBottom: Math.max(20, insets.bottom + 12) },
+							]}
+							onPress={(e) => e.stopPropagation()}
+						>
+							<View style={styles.modalHandleBar}>
+								<View style={styles.modalHandlePill} />
+							</View>
+
+							{selectedCategoryModal && (
+								<>
+									<View style={styles.modalHeader}>
+										<View style={styles.modalTitleRow}>
+											<View
+												style={[
+													styles.modalCategoryBadge,
+													{ backgroundColor: `${selectedCategoryModal.color}22` },
+												]}
+											>
+												<Text style={styles.modalCategoryEmoji}>
+													{selectedCategoryModal.icon || '📦'}
+												</Text>
+											</View>
+											<View style={{ flex: 1 }}>
+												<Text style={styles.modalCategoryTitle}>
+													{selectedCategoryModal.text}
+												</Text>
+												<Text style={styles.modalPeriodSubtitle}>
+													{formatAnalysisDate(
+														selectedDate,
+														summaryMode,
+														i18n.language,
+														t
+													)}
+												</Text>
+											</View>
+										</View>
+										<TouchableOpacity
+											style={styles.modalCloseButton}
+											onPress={() => setSelectedCategoryModal(null)}
+										>
+											<Ionicons name="close" size={22} color="#495057" />
+										</TouchableOpacity>
+									</View>
+
+									<View style={styles.modalSummaryBanner}>
+										<View style={styles.modalSummaryItem}>
+											<Text style={styles.modalSummaryLabel}>
+												{t('total_for_period', 'Total in Period')}
+											</Text>
+											<Text
+												style={[
+													styles.modalSummaryValue,
+													{
+														color:
+															transactionType === 'income'
+																? theme.success
+																: theme.danger,
+													},
+												]}
+											>
+												{uangUtils.formatAmount(
+													selectedCategoryModal.value,
+													mataUang
+												)}
+											</Text>
+										</View>
+										<View style={styles.modalSummaryDivider} />
+										<View style={styles.modalSummaryItem}>
+											<Text style={styles.modalSummaryLabel}>
+												{t('transactions', 'Transactions')}
+											</Text>
+											<Text style={styles.modalSummaryValue}>
+												{t(
+													'transactions_count_label',
+													'{{count}} transaction(s)',
+													{ count: selectedCategoryModal.count }
+												)}
+											</Text>
+										</View>
+										<View style={styles.modalSummaryDivider} />
+										<View style={styles.modalSummaryItem}>
+											<Text style={styles.modalSummaryLabel}>
+												{t('share_of_total', 'Share of Total')}
+											</Text>
+											<Text style={styles.modalSummaryValue}>
+												{Math.round(
+													(selectedCategoryModal.value /
+														(totalPie || 1)) *
+													100
+												)}
+												%
+											</Text>
+										</View>
+									</View>
+
+									<View style={{ flex: 1, width: '100%' }}>
+										<FlashList
+											data={categoryFlashListItems}
+											keyExtractor={(item) => item.id}
+											getItemType={(item) => item.type}
+											renderItem={({ item }) => {
+												if (item.type === 'header') {
+													return (
+														<View style={styles.sectionHeader}>
+															<Text style={styles.sectionHeaderText}>
+																{item.title}
+															</Text>
+														</View>
+													);
+												}
+												return (
+													<TransactionItem
+														transaction={item.data}
+														theme={theme}
+														mataUang={mataUang}
+														onDelete={handleDeleteTransaction}
+														onEdit={handleEditTransaction}
+														customKategori={kategori}
+													/>
+												);
+											}}
+											estimatedItemSize={76}
+											contentContainerStyle={styles.modalListContent}
+											showsVerticalScrollIndicator={false}
+											ListEmptyComponent={() => (
+												<View style={styles.modalEmptyContainer}>
+													<Ionicons
+														name="receipt-outline"
+														size={56}
+														color="#adb5bd"
+													/>
+													<Text style={styles.modalEmptyText}>
+														{t(
+															'no_transactions_for_category',
+															'No transactions found for this category in this period.'
+														)}
+													</Text>
+												</View>
+											)}
+										/>
+									</View>
+								</>
+							)}
+						</Pressable>
+					</Pressable>
+				</Modal>
+
+				{/* Edit Transaction Modal */}
+				<AddTransactionModal
+					visible={editModalVisible}
+					onClose={() => {
+						setEditingTransaction(null);
+						setEditModalVisible(false);
+					}}
+					onSave={() => { }}
+					selectedDate={new Date()}
+					transaction={editingTransaction || undefined}
+					mataUang={mataUang}
+					kategori={kategori}
+					budgetData={budgetData || { budget: {}, default: { all: 0 } }}
+					onUpdate={handleUpdateTransaction}
+				/>
 			</SafeAreaView>
 		</LinearGradient>
 	);
@@ -847,5 +1172,149 @@ const styles = StyleSheet.create({
 	fancySummaryModeTextActive: {
 		color: '#fff',
 		fontWeight: '700',
+	},
+	// Modal styles for Category Transactions
+	modalBackdrop: {
+		flex: 1,
+		backgroundColor: 'rgba(0, 0, 0, 0.45)',
+		justifyContent: 'flex-end',
+	},
+	modalSheet: {
+		backgroundColor: '#ffffff',
+		borderTopLeftRadius: 28,
+		borderTopRightRadius: 28,
+		paddingHorizontal: 20,
+		paddingTop: 10,
+		height: '85%',
+		maxHeight: '90%',
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: -4 },
+		shadowOpacity: 0.15,
+		shadowRadius: 12,
+		elevation: 10,
+	},
+	modalHandleBar: {
+		alignItems: 'center',
+		paddingVertical: 8,
+		marginBottom: 6,
+	},
+	modalHandlePill: {
+		width: 44,
+		height: 5,
+		borderRadius: 3,
+		backgroundColor: '#dee2e6',
+	},
+	modalHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 16,
+	},
+	modalTitleRow: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		flex: 1,
+		marginRight: 12,
+	},
+	modalCategoryBadge: {
+		width: 46,
+		height: 46,
+		borderRadius: 23,
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginRight: 14,
+	},
+	modalCategoryEmoji: {
+		fontSize: 24,
+	},
+	modalCategoryTitle: {
+		fontSize: 19,
+		fontWeight: '700',
+		color: '#212529',
+		marginBottom: 2,
+	},
+	modalPeriodSubtitle: {
+		fontSize: 13,
+		fontWeight: '500',
+		color: '#6c757d',
+	},
+	modalCloseButton: {
+		width: 36,
+		height: 36,
+		borderRadius: 18,
+		backgroundColor: '#f1f3f5',
+		justifyContent: 'center',
+		alignItems: 'center',
+	},
+	modalSummaryBanner: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		backgroundColor: '#f8f9fa',
+		borderRadius: 16,
+		paddingVertical: 12,
+		paddingHorizontal: 12,
+		borderWidth: 1,
+		borderColor: '#e9ecef',
+		marginBottom: 16,
+	},
+	modalSummaryItem: {
+		flex: 1,
+		alignItems: 'center',
+	},
+	modalSummaryDivider: {
+		width: 1,
+		height: 32,
+		backgroundColor: '#dee2e6',
+	},
+	modalSummaryLabel: {
+		fontSize: 11,
+		fontWeight: '600',
+		color: '#6c757d',
+		marginBottom: 4,
+		textTransform: 'uppercase',
+		letterSpacing: 0.3,
+	},
+	modalSummaryValue: {
+		fontSize: 14,
+		fontWeight: '700',
+		color: '#212529',
+		textAlign: 'center',
+	},
+	modalListContent: {
+		paddingBottom: 36,
+	},
+	modalEmptyContainer: {
+		alignItems: 'center',
+		justifyContent: 'center',
+		paddingVertical: 50,
+		paddingHorizontal: 20,
+	},
+	modalEmptyText: {
+		fontSize: 15,
+		color: '#6c757d',
+		textAlign: 'center',
+		marginTop: 12,
+		lineHeight: 22,
+	},
+	sectionHeader: {
+		alignSelf: 'flex-start',
+		backgroundColor: '#e3f2fd',
+		paddingVertical: 5,
+		paddingHorizontal: 14,
+		borderRadius: 14,
+		marginTop: 12,
+		marginBottom: 6,
+		shadowColor: '#90caf9',
+		shadowOffset: { width: 0, height: 1 },
+		shadowOpacity: 0.12,
+		shadowRadius: 4,
+		elevation: 2,
+	},
+	sectionHeaderText: {
+		fontSize: 13,
+		fontWeight: '700',
+		color: '#1976d2',
+		letterSpacing: 0.2,
 	},
 }); 
